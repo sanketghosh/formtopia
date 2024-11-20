@@ -1,11 +1,16 @@
 // PACKAGES
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { Loader2Icon } from "lucide-react";
 
 // LOCAL MODULES
 import { RegisterSchema } from "@/schemas";
+import { registerAction } from "@/actions/auth.actions";
+import { DEFAULT_AUTH_REDIRECT_ROUTE } from "@/constants";
 
 // COMPONENTS
 import { Button } from "@/components/ui/button";
@@ -18,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import AuthCard from "../cards/auth-card";
+import AuthCard from "@/components/cards/auth-card";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
@@ -33,9 +38,8 @@ export default function RegisterForm() {
     },
   });
 
-  /*
   const mutation = useMutation({
-    mutationFn: registerAction.registerAction,
+    mutationFn: registerAction,
     onSuccess: async (data) => {
       toast.success(data.message);
       localStorage.setItem("user_data", JSON.stringify(data?.data));
@@ -45,16 +49,15 @@ export default function RegisterForm() {
       toast.error(error.message);
     },
   });
-*/
+
   const formSubmitHandler = (values: z.infer<typeof RegisterSchema>) => {
-    // mutation.mutate(values);
-    console.log(values);
+    mutation.mutate(values);
   };
 
   return (
     <AuthCard
       title="Get started"
-      description="Start your programming journey easily with Avocoding inside you browser."
+      description="Start building your custom form in the simplest and easiest way possible."
       footer="If you already have an account, just login by switching to login tab."
     >
       <Form {...form}>
@@ -71,7 +74,7 @@ export default function RegisterForm() {
                       {...field}
                       placeholder="johndoe"
                       type="text"
-                      // disabled={mutation.isPending}
+                      disabled={mutation.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -89,7 +92,7 @@ export default function RegisterForm() {
                       {...field}
                       placeholder="johndoe@mail.com"
                       type="email"
-                      // disabled={mutation.isPending}
+                      disabled={mutation.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,7 +110,7 @@ export default function RegisterForm() {
                       {...field}
                       placeholder="C5AjJHe9FQvLlg"
                       type="password"
-                      // disabled={mutation.isPending}
+                      disabled={mutation.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -125,7 +128,7 @@ export default function RegisterForm() {
                       {...field}
                       placeholder="C5AjJHe9FQvLlg"
                       type="password"
-                      // disabled={mutation.isPending}
+                      disabled={mutation.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -134,12 +137,11 @@ export default function RegisterForm() {
             />
           </div>
           <Button className="mt-3 w-full md:mt-4">
-            {/* {mutation.isPending ? (
+            {mutation.isPending ? (
               <Loader2Icon className="animate-spin" />
             ) : (
               "Register"
-            )} */}
-            register
+            )}
           </Button>
         </form>
       </Form>

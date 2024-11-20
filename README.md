@@ -6,7 +6,7 @@
 <div align="center">
   <br />
     <a href="https://github.com/sanketghosh/formtopia" target="_blank">
-      <img src="https://github.com/sanketghosh/fastNotes/blob/main/client/public/formtopiaLogo.svg" alt="Project Banner">
+      <img src="https://github.com/sanketghosh/fastNotes/blob/main/client/public/formtopiaLogo.png" alt="Project Banner">
     </a>
   <br />
 </div>
@@ -23,8 +23,6 @@
   <img src="https://img.shields.io/badge/Bun-39393c?logo=bun&logoColor=white&style=for-the-badge" height="40" alt="express logo"  />
   <img width="12" />
   <img src="https://img.shields.io/badge/Sqlite-39393c?logo=sqlite&logoColor=white&style=for-the-badge" height="40" alt="express logo"  />
-  <img width="12" />
-  <img src="https://img.shields.io/badge/Markdown-39393c?logo=markdown&logoColor=white&style=for-the-badge" height="40" alt="prisma logo"  />
   <img width="12" />
   <img src="https://img.shields.io/badge/Prisma-39393c?logo=prisma&logoColor=white&style=for-the-badge" height="40" alt="prisma logo"  />
 </div>

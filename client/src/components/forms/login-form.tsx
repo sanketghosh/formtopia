@@ -12,19 +12,23 @@ import { LoginSchema } from "@/schemas";
 import AuthCard from "@/components/cards/auth-card";
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useAuthContext } from "@/contexts/auth-context-provider";
+import { DEFAULT_AUTH_REDIRECT_ROUTE } from "@/constants";
+import { useMutation } from "@tanstack/react-query";
+import { loginAction } from "@/actions/auth.actions";
+import { Loader2Icon } from "lucide-react";
 
 export default function LoginForm() {
-  // const { toast } = useToast();
-  // const { updateUser } = useAuthContext();
+  const { updateUser } = useAuthContext();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -35,9 +39,8 @@ export default function LoginForm() {
     },
   });
 
-  /*
   const mutation = useMutation({
-    mutationFn: loginAction.loginAction,
+    mutationFn: loginAction,
     onSuccess: async (data) => {
       toast.success(data.message);
       updateUser(data?.data);
@@ -47,10 +50,9 @@ export default function LoginForm() {
       toast.error(error.message);
     },
   });
-  */
 
   const formSubmitHandler = (values: z.infer<typeof LoginSchema>) => {
-    // mutation.mutate(values);
+    mutation.mutate(values);
     console.log(values);
   };
 
@@ -89,7 +91,7 @@ export default function LoginForm() {
                       {...field}
                       placeholder="johndoe@mail.com"
                       type="email"
-                      // disabled={mutation.isPending}
+                      disabled={mutation.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,7 +109,7 @@ export default function LoginForm() {
                       {...field}
                       placeholder="nD9I1xTod6mN31"
                       type="password"
-                      // disabled={mutation.isPending}
+                      disabled={mutation.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -115,16 +117,12 @@ export default function LoginForm() {
               )}
             />
           </div>
-          <Button
-            className="mt-4 w-full"
-            // disabled={mutation.isPending}
-          >
-            {/* {mutation.isPending ? (
+          <Button className="mt-4 w-full" disabled={mutation.isPending}>
+            {mutation.isPending ? (
               <Loader2Icon className="animate-spin" />
             ) : (
               "Login"
-            )} */}
-            login
+            )}
           </Button>
           <Button
             type="button"
