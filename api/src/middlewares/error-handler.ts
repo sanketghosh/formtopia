@@ -1,11 +1,11 @@
-import { BAD_REQUEST } from "@/constants";
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "@/constants";
 import type {
   ErrorRequestHandler,
   NextFunction,
   Request,
   Response,
 } from "express";
-import type { z } from "zod";
+import { ZodError, type z } from "zod";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((err) => ({
@@ -20,13 +20,21 @@ const handleZodError = (res: Response, error: z.ZodError) => {
 };
 
 // @ts-ignore
-const errorHandler: ErrorRequestHandler = (
+export const errorHandler: ErrorRequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
   error
 ) => {
   console.log(`PATH ${req.path}`, error);
-};
 
-export default errorHandler;
+  if (error instanceof ZodError) {
+    return handleZodError(res, error);
+  }
+
+  // sending the response
+  res.status(INTERNAL_SERVER_ERROR).json({
+    message:
+      "ERROR! Something went wrong. Might be some internal server error.",
+  });
+};

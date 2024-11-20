@@ -7,9 +7,10 @@ import { z } from "zod";
 import swaggerUI from "swagger-ui-express";
 
 // local modules
-import healthCheck from "@/modules/health-check";
 import swaggerDoc from "@/swagger.json";
-import errorHandler from "@/middlewares/error-handler";
+import { errorHandler } from "@/middlewares";
+import authRoutes from "@/modules/auth/auth.routes";
+import healthCheck from "@/modules/health-check";
 
 // app initializer
 const app = express();
@@ -40,6 +41,7 @@ app.use(morgan("combined"));
 
 // routes
 app.use("/api/v1", healthCheck);
+app.use("/api/v1", authRoutes);
 
 // custom middlewares
 app.use(errorHandler);
