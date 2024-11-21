@@ -1,45 +1,56 @@
-import { logoutAction } from "@/actions/auth.actions";
-import { Button } from "@/components/ui/button";
-import { useAuthContext } from "@/contexts/auth-context-provider";
-import { useMutation } from "@tanstack/react-query";
-import { LogOutIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+// components
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+//
+import { submissionPercentage } from "@/utils/submission-percentage";
+
+type StatsCardsType = {
+  title: string;
+  desc?: string;
+  statsNumber: number;
+};
 
 export default function Dashboard() {
-  const { user } = useAuthContext();
-  const navigate = useNavigate();
-
-  const mutation = useMutation({
-    mutationFn: logoutAction,
-    onSuccess: async (data) => {
-      toast.success(data.message);
-      localStorage.removeItem("user_data");
-      navigate("/");
+  const statsCards = [
+    {
+      title: "Forms created",
+      desc: "Number of the total of forms created by you.",
+      statsNumber: 200,
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
+    {
+      title: "Submitted forms",
+      desc: "Number of the total forms has been submitted by you.",
+      statsNumber: 100,
     },
-  });
-
-  const formSubmitHandler = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutation.mutate();
-    // console.log(values);
-  };
+    {
+      title: "Submitted forms percentage",
+      desc: "Number of the total forms has been submitted by you.",
+      statsNumber: submissionPercentage(200, 33),
+    },
+  ];
 
   return (
     <div>
-      <h2>{user?.username}</h2>
-      <form onSubmit={formSubmitHandler} className="m-10 w-32">
-        <Button
-          className="flex w-full cursor-pointer items-center justify-start gap-2"
-          variant={"destructive"}
-        >
-          <LogOutIcon className="size-5" />
-          Log out
-        </Button>
-      </form>
+      <div className="grid w-full grid-cols-1 gap-3 lg:grid-cols-3">
+        {statsCards.map((item: StatsCardsType, idx) => (
+          <Card className="cursor-pointer transition-all hover:bg-secondary/30">
+            <CardHeader>
+              <CardTitle>{item.title}</CardTitle>
+              <CardDescription>{item.desc}</CardDescription>
+            </CardHeader>
+            <CardContent className="text-xl font-semibold md:text-3xl lg:text-4xl">
+              {item.statsNumber}
+              {idx === 2 ? "%" : ""}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
