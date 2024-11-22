@@ -6,7 +6,7 @@
 <div align="center">
   <br />
     <a href="https://github.com/sanketghosh/formtopia" target="_blank">
-      <img src="https://github.com/sanketghosh/formtopia/blob/main/client/public/formtopiaLogo.png" alt="Project Banner">
+      <img src="https://github.com/sanketghosh/formtopia/blob/main/client/public/formtopia.png" alt="Project Banner">
     </a>
   <br />
 </div>
