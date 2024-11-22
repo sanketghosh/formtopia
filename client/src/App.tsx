@@ -15,19 +15,32 @@ import {
   SingleFormData,
   Statistics,
 } from "@/pages";
+import { AuthRedirect, PrivateRoute } from "@/routes";
 
 // routes
 const routes = createBrowserRouter([
   {
     path: "/auth",
-    element: <Auth />,
+    element: (
+      <AuthRedirect>
+        <Auth />
+      </AuthRedirect>
+    ),
   },
   {
     path: "/",
-    element: <Landing />,
+    element: (
+      <AuthRedirect>
+        <Landing />
+      </AuthRedirect>
+    ),
   },
   {
-    element: <MainLayout />,
+    element: (
+      <PrivateRoute>
+        <MainLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "/dashboard",

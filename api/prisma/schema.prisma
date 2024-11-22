@@ -11,8 +11,7 @@ datasource db {
 }
 
 model User {
-  id String @unique @default(cuid())
-
+  id       String  @id @default(cuid())
   username String  @unique
   email    String  @unique
   password String
@@ -21,5 +20,46 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  forms Form[]
+
   @@map("users")
+}
+
+model Form {
+  id        String   @id @default(cuid())
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+
+  title       String
+  description String @default("")
+  content     String @default("[]")
+
+  visitsCount      Int @default(0)
+  submissionsCount Int @default(0)
+
+  shareURL String @default(uuid())
+
+  formSubmissions FormSubmission[]
+  user            User             @relation(fields: [userId], references: [id])
+
+  @@map("forms")
+}
+
+model FormSubmission {
+  id          String   @id @default(cuid())
+  formId      String
+  submittedAt DateTime @default(now())
+  form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  content String // Captured form data in JSON
+
+  city    String?
+  country String?
+  browser String?
+  os      String?
+  device  String?
+
+  @@map("form_submissions")
 }

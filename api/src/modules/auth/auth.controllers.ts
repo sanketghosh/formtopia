@@ -3,13 +3,13 @@ import type { NextFunction, Request, Response } from "express";
 import type { User } from "@prisma/client";
 
 // local modules
+import { BAD_REQUEST, OK, TOKEN_EXP_AGE, UNAUTHORIZED } from "@/constants";
 import type {
   LoginSchemaType,
   RegisterSchemaType,
 } from "@/modules/auth/auth.schema";
 import { db } from "@/lib/prisma";
 import { catchErrors } from "@/utils/catch-errors";
-import { TOKEN_EXP_AGE } from "@/constants";
 import { jwtGenerator } from "@/utils/jwt-generator";
 
 export const registerHandler = catchErrors(
@@ -28,7 +28,7 @@ export const registerHandler = catchErrors(
 
     // if user exists with same email send error
     if (user) {
-      return res.status(401).json({
+      return res.status(UNAUTHORIZED).json({
         message: "ERROR! Bad request. You cannot register.",
       });
     }
@@ -56,7 +56,7 @@ export const registerHandler = catchErrors(
         maxAge: TOKEN_EXP_AGE,
         // secure: true // in prod un-comment
       })
-      .status(200)
+      .status(OK)
       .json({
         message: "SUCCESS! User has been registered.",
         data: _data,
@@ -74,7 +74,7 @@ export const loginHandler = catchErrors(
 
     // if no email exists
     if (!email) {
-      return res.status(400).json({
+      return res.status(BAD_REQUEST).json({
         message: "ERROR! Bad request. Password is required.",
       });
     }
@@ -88,9 +88,9 @@ export const loginHandler = catchErrors(
 
     // if user does not exist
     if (!existedUser) {
-      return res.status(401).json({
+      return res.status(UNAUTHORIZED).json({
         message:
-          "ERROR! Bad request. Cannot login, check your credentials and try again.",
+          "ERROR! Unauthorized. Cannot login, check your credentials and try again.",
       });
     }
 
@@ -102,7 +102,7 @@ export const loginHandler = catchErrors(
 
     // if compare
     if (!comparePassword) {
-      return res.status(401).json({
+      return res.status(UNAUTHORIZED).json({
         message: "ERROR! The credentials you provided are invalid.",
       });
     }
@@ -118,7 +118,7 @@ export const loginHandler = catchErrors(
         maxAge: TOKEN_EXP_AGE,
         // secure: true // in prod un-comment
       })
-      .status(200)
+      .status(OK)
       .json({
         message: "SUCCESS! You have been logged in.",
         data: _data,

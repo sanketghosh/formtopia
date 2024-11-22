@@ -3,6 +3,7 @@ import {
   AppWindowIcon,
   BellIcon,
   ChartPieIcon,
+  CirclePlusIcon,
   LibraryIcon,
   PlusCircleIcon,
   SettingsIcon,
@@ -23,11 +24,6 @@ const MENU_LINKS = [
     href: "/dashboard",
     text: "Dashboard",
     icon: AppWindowIcon,
-  },
-  {
-    href: "/create-form",
-    text: "Create Form",
-    icon: PlusCircleIcon,
   },
   {
     href: "/statistics",
@@ -69,6 +65,12 @@ export default function NavMain() {
             </Link>
           </SidebarMenuItem>
         ))}
+        {/*   <SidebarMenuItem>
+          <SidebarMenuButton>
+            <CirclePlusIcon />
+            Create Form
+          </SidebarMenuButton>
+        </SidebarMenuItem> */}
       </SidebarMenu>
     </SidebarGroup>
   );

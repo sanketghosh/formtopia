@@ -10,6 +10,7 @@ import swaggerUI from "swagger-ui-express";
 import swaggerDoc from "@/swagger.json";
 import { errorHandler } from "@/middlewares";
 import authRoutes from "@/modules/auth/auth.routes";
+import formRoutes from "@/modules/form/form.routes";
 import healthCheck from "@/modules/health-check";
 
 // app initializer
@@ -42,6 +43,7 @@ app.use(morgan("combined"));
 // routes
 app.use("/api/v1", healthCheck);
 app.use("/api/v1", authRoutes);
+app.use("/api/v1", formRoutes);
 
 // custom middlewares
 app.use(errorHandler);
