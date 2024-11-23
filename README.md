@@ -1,14 +1,13 @@
 <div align="center">
-<h1>formtopia</h1>
-<p>Formtopia: Effortless Form Building & Sharing.</p>
+  <br />
+    <a href="https://github.com/sanketghosh/formtopia" target="_blank">
+      <img src="./formtopia.png" alt="Project Banner" width="150" height="150">
+    </a>
+  <br />
 </div>
 
 <div align="center">
-  <br />
-    <a href="https://github.com/sanketghosh/formtopia" target="_blank">
-      <img src="https://github.com/sanketghosh/fastNotes/blob/main/client/public/formtopia.png" alt="Project Banner">
-    </a>
-  <br />
+<p>Formtopia: Effortless Form Building & Sharing.</p>
 </div>
 
 <div align="center">
