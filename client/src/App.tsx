@@ -51,7 +51,7 @@ const routes = createBrowserRouter([
         element: <SingleFormData />,
       },
       {
-        path: "/create-form",
+        path: "/create-form/:id",
         element: <CreateForm />,
       },
       {

@@ -4,7 +4,7 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
     fontFamily: {
-      spaceGrotesk: ["Space Grotesk", "sans-serif"],
+      inter: ["Inter", "sans-serif"],
     },
     extend: {
       borderRadius: {

@@ -1,5 +1,5 @@
 // components
-import FormCard from "@/components/cards/form-card";
+import { formStatsAction } from "@/actions/form.actions";
 import DialogContentWrapper from "@/components/dialogs/dialog-content-wrapper";
 import StartFormCreation from "@/components/forms/create-form/start-form-creation";
 import { Button } from "@/components/ui/button";
@@ -10,19 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useAuthContext } from "@/contexts/auth-context-provider";
 
 // local modules
-import { submissionPercentage } from "@/utils/submission-percentage";
-import { CirclePlusIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { CirclePlusIcon, Loader2Icon } from "lucide-react";
 
 type StatsCardsType = {
   title: string;
@@ -30,31 +23,38 @@ type StatsCardsType = {
   statsNumber: number;
 };
 
-const statsCards: StatsCardsType[] = [
-  {
-    title: "Forms created",
-    desc: "Number of the total of forms created.",
-    statsNumber: 200,
-  },
-  {
-    title: "Submitted forms",
-    desc: "Number of the total forms has been submitted.",
-    statsNumber: 100,
-  },
-  {
-    title: "Response percentage",
-    desc: "Percentage of response received.",
-    statsNumber: submissionPercentage(200, 33),
-  },
-  {
-    title: "Bounce rate",
-    desc: "Rate of forms have not been submitted.",
-    statsNumber: submissionPercentage(200, 33),
-  },
-];
-
 export default function Dashboard() {
   const { user } = useAuthContext();
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: formStatsAction,
+    queryKey: ["get-form-stats"],
+    staleTime: 5000,
+    refetchOnWindowFocus: true,
+  });
+
+  const statsCards: StatsCardsType[] = [
+    {
+      title: "Forms visits",
+      desc: "Number of the total of forms visits.",
+      statsNumber: data?.data.visits,
+    },
+    {
+      title: "Submissions",
+      desc: "Number of the total forms has been submitted.",
+      statsNumber: data?.data.submissions,
+    },
+    {
+      title: "Response percentage",
+      desc: "Percentage of response received.",
+      statsNumber: data?.data.submissionRate,
+    },
+    {
+      title: "Bounce rate",
+      desc: "Rate of forms have not been submitted.",
+      statsNumber: data?.data.bounceRate,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -70,14 +70,29 @@ export default function Dashboard() {
       </div>
       <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {statsCards.map((item: StatsCardsType, idx) => (
-          <Card className="cursor-pointer transition-all hover:bg-secondary/30">
+          <Card
+            className="cursor-pointer transition-all hover:bg-secondary/30"
+            key={idx}
+          >
             <CardHeader>
               <CardTitle>{item.title}</CardTitle>
               <CardDescription>{item.desc}</CardDescription>
             </CardHeader>
             <CardContent className="text-2xl font-semibold md:text-3xl lg:text-4xl">
-              {item.statsNumber}
-              {idx === 2 || idx === 3 ? "%" : ""}
+              {isError ? (
+                <>{error.message}</>
+              ) : (
+                <>
+                  {isLoading ? (
+                    <Loader2Icon className="animate-spin text-muted-foreground" />
+                  ) : (
+                    <>
+                      {item.statsNumber}
+                      {idx === 2 || idx === 3 ? "%" : ""}
+                    </>
+                  )}
+                </>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -85,7 +100,10 @@ export default function Dashboard() {
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button>Create Form</Button>
+          <Button>
+            <CirclePlusIcon size={22} />
+            Create Form
+          </Button>
         </DialogTrigger>
         <DialogContentWrapper
           title="Start creating form"
