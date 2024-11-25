@@ -7,6 +7,13 @@ module.exports = {
       inter: ["Inter", "sans-serif"],
     },
     extend: {
+      backgroundImage: {
+        chequered:
+          "linear-gradient(hsl(var(--secondary)) 1.1px, transparent 1.1px), linear-gradient(to right, hsl(var(--secondary)) 1.1px, hsl(var(--background)) 1.1px)",
+      },
+      backgroundSize: {
+        chequered: "22px 22px", // Set the size of the squares
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
