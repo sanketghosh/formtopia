@@ -4,6 +4,7 @@ import express from "express";
 // local modules
 import { verifyToken } from "@/middlewares/verify-token";
 import {
+  fetchFormsHandler,
   formCreateHandler,
   formStatsHandler,
 } from "@/modules/form/form.controller";
@@ -19,5 +20,6 @@ router.post(
   schemaValidator(FormCreateSchema),
   formCreateHandler
 );
+router.get("/form/fetch-forms", verifyToken, fetchFormsHandler);
 
 export default router;

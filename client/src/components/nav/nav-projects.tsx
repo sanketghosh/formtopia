@@ -17,26 +17,35 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchFormActions } from "@/actions/form.actions";
+import { FormCardType } from "@/types";
 
 export default function NavProjects() {
   const { isMobile } = useSidebar();
+
+  const { error, data, isLoading, isError } = useQuery({
+    queryKey: ["fetch-forms"],
+    queryFn: () => fetchFormActions("latest"),
+    staleTime: 5000,
+  });
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Latest Created Forms</SidebarGroupLabel>
       <SidebarMenu className="space-y-2">
-        {[1, 2, 3, 4, 5].map((item, idx) => (
-          <SidebarMenuItem key={idx}>
+        {data?.data.map((form: FormCardType) => (
+          <SidebarMenuItem key={form.id}>
             <SidebarMenuButton size={"lg"} className="hover:bg-secondary">
               <Link
-                to={"/single-form-data/23616"}
+                to={`/single-form-data/${form.id}`}
                 className="flex w-full flex-col"
               >
-                <h1 className="text-left text-base font-medium">
-                  Collect data
+                <h1 className="truncate text-left text-sm font-medium">
+                  {form.title}
                 </h1>
                 <p className="line-clamp-1 text-left text-muted-foreground">
-                  https://ui.shadcn.com/docs/components/sidebar#sidebarcontent
+                  {form.description}
                 </p>
               </Link>
             </SidebarMenuButton>

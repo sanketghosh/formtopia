@@ -104,3 +104,45 @@ export const formCreateHandler = catchErrors(
     });
   }
 );
+
+/**
+ *
+ */
+export const fetchFormsHandler = catchErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    const { sort } = req.query;
+
+    // if unauthorized
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "ERROR! Unauthorized. Cannot fullfil your request.",
+      });
+    }
+
+    // fetch all forms created by authenticated user
+    const forms = await db.form.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
+        visitsCount: true,
+        submissionsCount: true,
+      },
+      orderBy: {
+        createdAt: sort === "latest" ? "desc" : "asc",
+      },
+    });
+
+    res.status(OK).json({
+      message: "SUCCESS! Forms fetched successfully.",
+      data: forms,
+    });
+  }
+);

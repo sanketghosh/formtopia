@@ -4,7 +4,7 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
     fontFamily: {
-      inter: ["Inter", "sans-serif"],
+      parkinsans: ["Parkinsans", "sans-serif"],
     },
     extend: {
       backgroundImage: {

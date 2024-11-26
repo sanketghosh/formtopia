@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 // local modules
@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function StartFormCreation() {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof StartFormCreationSchema>>({
@@ -40,9 +40,9 @@ export default function StartFormCreation() {
     mutationFn: createFormAction,
     onSuccess: async (data) => {
       toast.success(data.message);
-      // await queryClient.invalidateQueries({
-      //   queryKey: [""],
-      // });
+      await queryClient.invalidateQueries({
+        queryKey: ["fetch-forms"],
+      });
       navigate(`/create-form/${data?.data.formId}`);
     },
     onError: (data) => {
