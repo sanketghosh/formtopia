@@ -43,6 +43,9 @@ export default function StartFormCreation() {
       await queryClient.invalidateQueries({
         queryKey: ["fetch-forms"],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ["fetch-forms-nav-projects"],
+      });
       navigate(`/create-form/${data?.data.formId}`);
     },
     onError: (data) => {

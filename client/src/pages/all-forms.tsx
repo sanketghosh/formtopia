@@ -1,13 +1,13 @@
 // packages
 import { useState } from "react";
 
-// components
-import FormCard from "@/components/cards/form-card";
-
 // local modules
 import { FormCardType, SortOrderType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFormActions } from "@/actions/form.actions";
+
+// components
+import FormCard from "@/components/cards/form-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FormCreateDialog from "@/components/dialogs/form-create-dialog";
 
 export default function AllForms() {
   const [sortOrder, setSortOrder] = useState<SortOrderType>("latest");
@@ -34,20 +35,31 @@ export default function AllForms() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col items-center gap-3 md:flex-row">
-        <Select
-          onValueChange={(value) => handleSortChange(value as SortOrderType)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by creation" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="latest">Latest</SelectItem>
-            <SelectItem value="oldest">Oldest</SelectItem>
-          </SelectContent>
-        </Select>
+      <FormCreateDialog />
+      {data?.data.length <= 0 ? (
+        <div>
+          <p>
+            Still no form created, you must create one first to view it here.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col items-center gap-3 md:flex-row">
+            <Select
+              onValueChange={(value) =>
+                handleSortChange(value as SortOrderType)
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by creation" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="latest">Latest</SelectItem>
+                <SelectItem value="oldest">Oldest</SelectItem>
+              </SelectContent>
+            </Select>
 
-        {/*    <Select
+            {/*    <Select
           onValueChange={(value) => handleSortChange(value as SortOrderType)}
         >
           <SelectTrigger className="w-[180px]">
@@ -59,24 +71,26 @@ export default function AllForms() {
             <SelectItem value="oldest">Oldest</SelectItem>
           </SelectContent>
         </Select> */}
-      </div>
+          </div>
 
-      {isError ? (
-        <p>{error.message}</p>
-      ) : (
-        <>
-          {isLoading ? (
-            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <Skeleton className="h-44" key={item} />
-              ))}
-            </div>
+          {isError ? (
+            <p>{error.message}</p>
           ) : (
-            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              {data?.data.map((form: FormCardType) => (
-                <FormCard key={form.id} data={form} />
-              ))}
-            </div>
+            <>
+              {isLoading ? (
+                <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                  {[1, 2, 3, 4, 5].map((item) => (
+                    <Skeleton className="h-44" key={item} />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                  {data?.data.map((form: FormCardType) => (
+                    <FormCard key={form.id} data={form} />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </>
       )}

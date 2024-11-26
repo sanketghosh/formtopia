@@ -8,6 +8,7 @@ import AllForms from "@/pages/all-forms";
 import Notifications from "@/pages/notifications";
 import Settings from "@/pages/settings";
 import Account from "@/pages/account";
+import Error from "@/pages/error";
 
 export {
   Auth,
@@ -20,4 +21,5 @@ export {
   Notifications,
   Settings,
   Account,
+  Error,
 };

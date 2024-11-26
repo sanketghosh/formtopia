@@ -1,11 +1,9 @@
 // packages
 import { useQuery } from "@tanstack/react-query";
-import { CirclePlusIcon, EyeIcon, Loader2Icon } from "lucide-react";
+import { LibraryIcon, Loader2Icon } from "lucide-react";
 
 // components
-import DialogContentWrapper from "@/components/dialogs/dialog-content-wrapper";
-import StartFormCreation from "@/components/forms/create-form/start-form-creation";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 // local modules
 import { useAuthContext } from "@/contexts/auth-context-provider";
@@ -21,6 +18,7 @@ import { formStatsAction } from "@/actions/form.actions";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import FormCreateDialog from "@/components/dialogs/form-create-dialog";
 
 type StatsCardsType = {
   title: string;
@@ -75,21 +73,7 @@ export default function Dashboard() {
       </div>
 
       <div className="flex items-center space-x-3">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size={"lg"}>
-              <CirclePlusIcon size={22} />
-              Create Form
-            </Button>
-          </DialogTrigger>
-          <DialogContentWrapper
-            title="Start creating form"
-            description="Entering a title and description will redirect you to the form creation page."
-          >
-            <StartFormCreation />
-          </DialogContentWrapper>
-        </Dialog>
-
+        <FormCreateDialog />
         <Link
           className={cn(
             buttonVariants({
@@ -99,7 +83,7 @@ export default function Dashboard() {
           )}
           to={"/all-forms"}
         >
-          <EyeIcon size={22} />
+          <LibraryIcon size={22} />
           View All Forms
         </Link>
       </div>

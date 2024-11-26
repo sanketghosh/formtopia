@@ -25,7 +25,7 @@ export default function NavProjects() {
   const { isMobile } = useSidebar();
 
   const { error, data, isLoading, isError } = useQuery({
-    queryKey: ["fetch-forms"],
+    queryKey: ["fetch-forms-nav-projects"],
     queryFn: () => fetchFormActions("latest"),
     staleTime: 5000,
   });
@@ -34,7 +34,7 @@ export default function NavProjects() {
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Latest Created Forms</SidebarGroupLabel>
       <SidebarMenu className="space-y-2">
-        {data?.data.map((form: FormCardType) => (
+        {data?.data.slice(0, 5).map((form: FormCardType) => (
           <SidebarMenuItem key={form.id}>
             <SidebarMenuButton size={"lg"} className="hover:bg-secondary">
               <Link

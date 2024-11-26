@@ -9,6 +9,7 @@ import {
   Auth,
   CreateForm,
   Dashboard,
+  Error,
   Landing,
   Notifications,
   Settings,
@@ -75,6 +76,10 @@ const routes = createBrowserRouter([
         element: <Account />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <Error />,
   },
 ]);
 
