@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FlagIcon, HomeIcon } from "lucide-react";
 import { Link } from "react-router-dom";
