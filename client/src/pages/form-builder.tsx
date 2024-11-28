@@ -39,15 +39,17 @@ export default function FormBuilder() {
                   published={data?.data.published}
                   title={data?.data.title}
                 />
-                <div className="bg-chequered-size flex min-h-[calc(100vh-64px)] justify-center bg-chequered p-4 md:p-6 lg:p-8">
-                  <div className="bg-sidebar p-3">h2</div>
+                <div className="bg-chequered-size flex h-full justify-center bg-chequered p-4 md:p-6 lg:p-8">
+                  <div className="flex h-full max-w-4xl flex-grow rounded-lg bg-sidebar p-4">
+                    <div></div>
+                  </div>
                 </div>
               </>
             )}
           </>
         )}
       </div>
-      <div className="hidden w-[500px] border-l border-sidebar-border bg-sidebar lg:block"></div>
+      <div className="sticky top-0 hidden h-screen w-[500px] border-l border-sidebar-border bg-sidebar lg:block"></div>
     </div>
   );
 }
