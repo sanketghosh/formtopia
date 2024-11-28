@@ -5,6 +5,7 @@ import express from "express";
 import { verifyToken } from "@/middlewares/verify-token";
 import {
   fetchFormsHandler,
+  fetchSingleFormHandler,
   formCreateHandler,
   formStatsHandler,
 } from "@/modules/form/form.controller";
@@ -21,5 +22,6 @@ router.post(
   formCreateHandler
 );
 router.get("/form/fetch-forms", verifyToken, fetchFormsHandler);
+router.get("/form/single-form/:formId", verifyToken, fetchSingleFormHandler);
 
 export default router;

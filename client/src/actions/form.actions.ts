@@ -38,3 +38,14 @@ export const fetchFormActions = async (sortOrder: SortOrderType) => {
   console.log(response.data);
   return response.data;
 };
+
+/**
+ *
+ * @param formId
+ * @returns
+ */
+export const fetchSingleFormAction = async (formId: string) => {
+  const response = await axiosApi.get(`/api/v1/form/single-form/${formId}`);
+  console.log(response.data);
+  return response.data;
+};

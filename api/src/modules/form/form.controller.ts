@@ -1,4 +1,4 @@
-import { BAD_REQUEST, OK, UNAUTHORIZED } from "@/constants";
+import { BAD_REQUEST, NOT_FOUND, OK, UNAUTHORIZED } from "@/constants";
 import { db } from "@/lib/prisma";
 import { catchErrors } from "@/utils/catch-errors";
 import type { NextFunction, Request, Response } from "express";
@@ -143,6 +143,55 @@ export const fetchFormsHandler = catchErrors(
     res.status(OK).json({
       message: "SUCCESS! Forms fetched successfully.",
       data: forms,
+    });
+  }
+);
+
+/**
+ *
+ */
+export const fetchSingleFormHandler = catchErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    // if not authenticated
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "ERROR! Unauthorized. Cannot fullfil your request.",
+      });
+    }
+
+    // fetch form by formId and ensure it belongs to the user
+    const form = await db.form.findFirst({
+      where: {
+        id: formId,
+        userId: userId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
+        visitsCount: true,
+        submissionsCount: true,
+        content: true,
+        shareURL: true,
+      },
+    });
+
+    //  if not form
+    if (!form) {
+      res.status(NOT_FOUND).json({
+        message: "ERROR! Form not found or you do not have access to it.",
+      });
+    }
+
+    res.status(OK).json({
+      message: "SUCCESS! Form fetched successfully.",
+      data: form,
     });
   }
 );

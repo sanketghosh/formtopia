@@ -15,7 +15,7 @@ import Error from "@/pages/error";
 // lazy loadings
 const Dashboard = lazy(() => import("./dashboard"));
 const SingleFormData = lazy(() => import("./single-form-data"));
-const CreateForm = lazy(() => import("./create-form"));
+const FormBuilder = lazy(() => import("./form-builder"));
 const Statistics = lazy(() => import("./statistics"));
 const AllForms = lazy(() => import("./all-forms"));
 const Notifications = lazy(() => import("./notifications"));
@@ -28,7 +28,7 @@ export {
   Dashboard,
   Landing,
   SingleFormData,
-  CreateForm,
+  FormBuilder,
   Statistics,
   AllForms,
   Notifications,

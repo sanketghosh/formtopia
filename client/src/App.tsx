@@ -7,7 +7,7 @@ import {
   Account,
   AllForms,
   Auth,
-  CreateForm,
+  FormBuilder,
   Dashboard,
   Error,
   Landing,
@@ -62,7 +62,7 @@ const routes = createBrowserRouter([
       },
       {
         path: "/create-form/:id",
-        element: <CreateForm />,
+        element: <FormBuilder />,
       },
       {
         path: "/statistics",
