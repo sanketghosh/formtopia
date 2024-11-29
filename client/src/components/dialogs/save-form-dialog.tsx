@@ -11,13 +11,13 @@ export default function SaveFormDialog() {
     >
       <div className="flex items-center gap-3">
         <form>
-          <Button>
+          <Button size={"sm"}>
             <SaveIcon />
             Save form
           </Button>
         </form>
         <DialogClose>
-          <Button variant={"destructive"}>
+          <Button size={"sm"} variant={"destructive"}>
             <XIcon />
             Cancel
           </Button>

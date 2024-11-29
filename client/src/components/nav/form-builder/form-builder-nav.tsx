@@ -2,6 +2,7 @@
 import {
   ChevronRightCircleIcon,
   Columns2Icon,
+  EllipsisVerticalIcon,
   Globe2Icon,
   SaveIcon,
 } from "lucide-react";
@@ -36,9 +37,9 @@ export default function FormBuilderNav({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size={"sm"}>
-              Next
-              <ChevronRightCircleIcon />
+            <Button size={"sm"} variant={"secondary"}>
+              Options
+              <EllipsisVerticalIcon />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-6 w-40 space-y-1">

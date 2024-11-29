@@ -7,6 +7,9 @@ module.exports = {
       parkinsans: ["Parkinsans", "sans-serif"],
     },
     extend: {
+      /* transitionDuration: {
+        DEFAULT: "75ms",
+      }, */
       backgroundImage: {
         chequered:
           "linear-gradient(hsl(var(--secondary)) 1.1px, transparent 1.1px), linear-gradient(to right, hsl(var(--secondary)) 1.1px, hsl(var(--background)) 1.1px)",

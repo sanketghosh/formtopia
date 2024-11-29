@@ -1,5 +1,7 @@
 // packages
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Loader2Icon } from "lucide-react";
+import { Suspense } from "react";
 
 // components
 import { MainLayout } from "@/layouts";
@@ -17,8 +19,6 @@ import {
   Statistics,
 } from "@/pages";
 import { AuthRedirect, PrivateRoute } from "@/routes";
-import { Loader2Icon } from "lucide-react";
-import { Suspense } from "react";
 
 // routes
 const routes = createBrowserRouter([
@@ -46,11 +46,13 @@ const routes = createBrowserRouter([
         </Suspense>
       </PrivateRoute>
     ),
-    /*  loader: async () => {
+    /*  
+      loader: async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate data fetch
       return {};
       // this is for react router dom's page loader implementation
-    }, */
+      }, 
+    */
     children: [
       {
         path: "/dashboard",
@@ -96,7 +98,7 @@ export default function App() {
   return (
     <RouterProvider
       router={routes}
-      // fallbackElement={<Loader />} // if i wanna implement loader using react router dom
+    // fallbackElement={<Loader />} // if i wanna implement loader using react router dom
     />
   );
 }

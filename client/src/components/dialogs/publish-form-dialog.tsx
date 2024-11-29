@@ -14,13 +14,13 @@ export default function PublishFormDialog() {
     >
       <div className="flex items-center gap-3">
         <form>
-          <Button>
+          <Button size={"sm"}>
             <Globe2Icon />
             Publish your form
           </Button>
         </form>
         <DialogClose>
-          <Button variant={"destructive"}>
+          <Button variant={"destructive"} size={"sm"}>
             <XIcon />
             Cancel
           </Button>
