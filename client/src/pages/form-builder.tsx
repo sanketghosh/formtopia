@@ -2,15 +2,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { DndContext, useDroppable } from "@dnd-kit/core";
+import { GripIcon } from "lucide-react";
 
 // local modules
 import { fetchSingleFormAction } from "@/actions/form.actions";
+import { cn } from "@/lib/utils";
 
 // components
 import { Skeleton } from "@/components/ui/skeleton";
 import FormBuilderNav from "@/components/nav/form-builder/form-builder-nav";
-import { GripIcon } from "lucide-react";
 import FormBuilderSidebar from "@/components/form-builder-elements/form-builder-sidebar";
+import DragOverlayWrapper from "@/components/form-builder-elements/drag-overlay-wrapper";
+import FormBuilderPad from "@/components/form-builder-elements/form-builder-pad";
 
 export default function FormBuilder() {
   const { id } = useParams<{ id?: string }>();
@@ -20,13 +23,6 @@ export default function FormBuilder() {
     queryKey: ["fetch-single-form"],
     queryFn: () => fetchSingleFormAction(id!),
     staleTime: 5000,
-  });
-
-  const droppable = useDroppable({
-    id: "designer-drop-area",
-    data: {
-      isDesignerDropArea: true,
-    },
   });
 
   return (
@@ -52,14 +48,7 @@ export default function FormBuilder() {
                   />
                   {/* main builder */}
                   <div className="bg-chequered-size flex h-full justify-center bg-chequered p-4 md:p-6 lg:p-8">
-                    <div className="flex h-full max-w-3xl flex-grow rounded-lg bg-sidebar p-4">
-                      <div className="flex h-full w-full select-none flex-col items-center justify-center gap-2 text-muted-foreground">
-                        <GripIcon size={30} />
-                        <p className="text-lg font-semibold capitalize">
-                          drop here
-                        </p>
-                      </div>
-                    </div>
+                    <FormBuilderPad />
                   </div>
                 </>
               )}
@@ -68,6 +57,7 @@ export default function FormBuilder() {
         </div>
         <FormBuilderSidebar />
       </div>
+      <DragOverlayWrapper />
     </DndContext>
   );
 }
