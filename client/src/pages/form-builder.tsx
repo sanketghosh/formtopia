@@ -1,16 +1,14 @@
 // packages
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { DndContext, useDroppable } from "@dnd-kit/core";
-import { GripIcon } from "lucide-react";
+import { DndContext } from "@dnd-kit/core";
 
 // local modules
 import { fetchSingleFormAction } from "@/actions/form.actions";
-import { cn } from "@/lib/utils";
 
 // components
 import { Skeleton } from "@/components/ui/skeleton";
-import FormBuilderNav from "@/components/nav/form-builder/form-builder-nav";
+import FormBuilderNav from "@/components/form-builder-elements/form-builder-nav";
 import FormBuilderSidebar from "@/components/form-builder-elements/form-builder-sidebar";
 import DragOverlayWrapper from "@/components/form-builder-elements/drag-overlay-wrapper";
 import FormBuilderPad from "@/components/form-builder-elements/form-builder-pad";
@@ -55,7 +53,7 @@ export default function FormBuilder() {
             </>
           )}
         </div>
-        <FormBuilderSidebar />
+        <FormBuilderSidebar published={data?.data.published} />
       </div>
       <DragOverlayWrapper />
     </DndContext>

@@ -53,7 +53,7 @@ export default function SidebarFormElementButton({
   return (
     <Button
       className={cn(
-        "flex size-20 flex-col",
+        "flex h-20 w-full flex-col",
         draggable.isDragging && "ring-2 ring-primary",
       )}
       variant={"outline"}
