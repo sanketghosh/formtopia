@@ -1,11 +1,5 @@
 import { AuthenticatedType } from "@/types";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 // context type
 type AuthContextType = {
@@ -13,7 +7,9 @@ type AuthContextType = {
   updateUser: (data: AuthenticatedType | null) => void;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   let initialUser = null;
@@ -63,14 +59,3 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export default AuthContextProvider;
-
-// using useAppContext app context hook
-export const useAuthContext = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error(
-      "ERROR! useAuthContext must be used within an AuthContextProvider",
-    );
-  }
-  return context;
-};

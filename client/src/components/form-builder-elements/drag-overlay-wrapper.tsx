@@ -1,8 +1,13 @@
-import { ElementsType } from "@/types";
+// packages
 import { Active, DragOverlay, useDndMonitor } from "@dnd-kit/core";
 import { useState } from "react";
-import { SidebarFormElementButtonDragOverlay } from "./sidebar-form-element-button";
-import { FormElements } from "./form-builder-elements";
+
+// local modules
+import { ElementsType } from "@/types";
+
+// components
+import { SidebarFormElementButtonDragOverlay } from "@/components/form-builder-elements/sidebar-form-element-button";
+import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
 
 export default function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>();
@@ -26,7 +31,7 @@ export default function DragOverlayWrapper() {
 
   let node = <div>No drag overlay</div>;
   const isSidebarButtonElement =
-    draggedItem.data?.current?.isDesignerButtonElement;
+    draggedItem.data?.current?.isFormBuilderButtonElement;
 
   if (isSidebarButtonElement) {
     const type = draggedItem.data?.current?.type as ElementsType;

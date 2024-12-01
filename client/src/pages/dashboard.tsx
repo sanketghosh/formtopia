@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 
 // local modules
-import { useAuthContext } from "@/contexts/auth-context-provider";
+import { useAuthContext } from "@/hooks/use-auth-context";
 import { formStatsAction } from "@/actions/form.actions";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";

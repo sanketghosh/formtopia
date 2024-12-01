@@ -46,11 +46,11 @@ export default function FormBuilderSidebar({
           <h2 className="font-medium">Elements</h2>
           <div className="grid grid-cols-3 gap-3">
             <SidebarFormElementButton formElement={FormElements.TextField} />
+            {/*   <SidebarFormElementButton formElement={FormElements.TextField} />
             <SidebarFormElementButton formElement={FormElements.TextField} />
             <SidebarFormElementButton formElement={FormElements.TextField} />
             <SidebarFormElementButton formElement={FormElements.TextField} />
-            <SidebarFormElementButton formElement={FormElements.TextField} />
-            <SidebarFormElementButton formElement={FormElements.TextField} />
+            <SidebarFormElementButton formElement={FormElements.TextField} /> */}
           </div>
         </div>
       </div>

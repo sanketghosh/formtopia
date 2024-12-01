@@ -1,4 +1,4 @@
-import { useAuthContext } from "@/contexts/auth-context-provider";
+import { useAuthContext } from "@/hooks/use-auth-context";
 
 export default function Account() {
   const { user } = useAuthContext();

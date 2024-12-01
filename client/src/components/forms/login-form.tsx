@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 
 // LOCAL MODULES
-// import { useAuthContext } from "@/providers/auth-provider";
+import { useAuthContext } from "@/hooks/use-auth-context";
 import { LoginSchema } from "@/schemas";
 
 // COMPONENTS
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useAuthContext } from "@/contexts/auth-context-provider";
 import { DEFAULT_AUTH_REDIRECT_ROUTE } from "@/constants";
 import { useMutation } from "@tanstack/react-query";
 import { loginAction } from "@/actions/auth.actions";

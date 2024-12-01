@@ -114,6 +114,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to view the 
 Well client setup is done now it's time for our back-end or `api`
 
 **API installation**
+
 Install the back-end / api dependencies using `bun`:
 
 ```bash

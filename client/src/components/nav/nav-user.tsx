@@ -11,7 +11,7 @@ import {
 
 // local modules
 import { logoutAction } from "@/actions/auth.actions";
-import { useAuthContext } from "@/contexts/auth-context-provider";
+import { useAuthContext } from "@/hooks/use-auth-context";
 
 // components
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -69,7 +69,7 @@ export default function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border"
+              className="border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user?.avatar} alt={user?.username} />
