@@ -46,7 +46,10 @@ export default function FormBuilder() {
                   />
                   {/* main builder */}
                   <div className="bg-chequered-size flex h-full justify-center bg-chequered p-4 md:p-6 lg:p-8">
-                    <FormBuilderPad />
+                    <FormBuilderPad
+                      title={data?.data.title}
+                      description={data?.data.description}
+                    />
                   </div>
                 </>
               )}

@@ -7,5 +7,5 @@ export default function FormElementWrapper({
   element: FormElementInstance;
 }) {
   const FormElement = FormElements[element.type].formElementComponent;
-  return <FormElement />;
+  return <FormElement elementInstance={element} />;
 }

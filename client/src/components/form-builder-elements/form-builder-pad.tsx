@@ -10,9 +10,17 @@ import { ElementsType } from "@/types";
 
 // components
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
-import FormElementWrapper from "./form-element-wrapper";
+import FormElementWrapper from "@/components/form-builder-elements/form-element-wrapper";
 
-export default function FormBuilderPad() {
+type FormBuilderPadProps = {
+  title: string;
+  description?: string;
+};
+
+export default function FormBuilderPad({
+  title,
+  description,
+}: FormBuilderPadProps) {
   // const [elements, setElements] = useState<FormElementInstance[]>([]);
 
   const { elements, addElementHandler } = useFormBuilderContext();
@@ -50,26 +58,36 @@ export default function FormBuilderPad() {
     <div
       ref={droppable.setNodeRef}
       className={cn(
-        "flex h-full max-w-3xl flex-grow rounded-lg bg-sidebar p-2",
+        "flex h-full max-w-3xl flex-grow flex-col rounded-lg bg-sidebar p-2",
         droppable.isOver && "ring-2 ring-primary",
       )}
     >
-      {!droppable.isOver && (
+      {elements.length > 0 && (
+        <div className="mb-3 p-2">
+          <h1 className="text-xl font-semibold lg:text-2xl">{title}</h1>
+          <p className="text-sm font-medium text-muted-foreground md:text-base">
+            {description}
+          </p>
+        </div>
+      )}
+      {!droppable.isOver && elements.length === 0 && (
         <div className="flex h-full w-full select-none flex-col items-center justify-center gap-2 text-muted-foreground">
           <GripIcon size={30} />
           <p className="text-lg font-semibold capitalize">drop here</p>
         </div>
       )}
-      {droppable.isOver && (
-        <div className="w-full p-2">
-          <div className="h-28 rounded-lg bg-secondary"></div>
-        </div>
-      )}
+
       {elements.length > 0 && (
         <div className="flex w-full flex-col gap-3 p-2">
           {elements.map((element) => (
             <FormElementWrapper key={element.id} element={element} />
           ))}
+        </div>
+      )}
+
+      {droppable.isOver && (
+        <div className="w-full p-2">
+          <div className="h-24 rounded-lg bg-secondary"></div>
         </div>
       )}
     </div>
