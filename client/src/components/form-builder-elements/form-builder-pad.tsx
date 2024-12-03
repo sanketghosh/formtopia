@@ -23,9 +23,10 @@ export default function FormBuilderPad({
 }: FormBuilderPadProps) {
   // const [elements, setElements] = useState<FormElementInstance[]>([]);
 
-  const { elements, addElementHandler } = useFormBuilderContext();
+  const { elements, addElementHandler, selectedElement, setSelectedElement } =
+    useFormBuilderContext();
 
-  console.log(elements, addElementHandler);
+  // console.log(elements, addElementHandler);
 
   const droppable = useDroppable({
     id: "form-builder-drop-area",
@@ -50,13 +51,18 @@ export default function FormBuilderPad({
         //  add a new element
         addElementHandler(0, newElement);
       }
-      console.log("@@EVENT --> DRAG END", event);
+      // console.log("@@EVENT --> DRAG END", event);
     },
   });
 
   return (
     <div
       ref={droppable.setNodeRef}
+      onClick={() => {
+        if (selectedElement) {
+          setSelectedElement(null);
+        }
+      }}
       className={cn(
         "flex h-full max-w-3xl flex-grow flex-col rounded-lg bg-sidebar p-2",
         droppable.isOver && "ring-2 ring-primary",

@@ -12,7 +12,8 @@ export default function FormElementWrapper({
 }: {
   element: FormElementInstance;
 }) {
-  const { removeElementHandler } = useFormBuilderContext();
+  const { removeElementHandler, selectedElement, setSelectedElement } =
+    useFormBuilderContext();
   const [mouseIsOver, setMouseIsOver] = useState<boolean>(false);
   const FormElement = FormElements[element.type].formElementComponent;
 
@@ -45,6 +46,8 @@ export default function FormElementWrapper({
 
   if (draggable.isDragging) return null;
 
+  console.log("@@SELECTED ELE", selectedElement);
+
   return (
     <div
       ref={draggable.setNodeRef}
@@ -56,6 +59,10 @@ export default function FormElementWrapper({
       }}
       onMouseLeave={() => {
         setMouseIsOver(false);
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelectedElement(element);
       }}
     >
       <div
@@ -72,7 +79,8 @@ export default function FormElementWrapper({
             <Button
               className="h-full"
               variant={"destructive"}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 removeElementHandler(element.id);
               }}
             >
