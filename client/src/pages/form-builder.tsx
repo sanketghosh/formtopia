@@ -1,7 +1,13 @@
 // packages
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { DndContext } from "@dnd-kit/core";
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 // local modules
 import { fetchSingleFormAction } from "@/actions/form.actions";
@@ -23,8 +29,23 @@ export default function FormBuilder() {
     staleTime: 5000,
   });
 
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 300,
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
+
   return (
-    <DndContext>
+    <DndContext sensors={sensors}>
       <div className="flex min-h-full">
         <div className="flex flex-1 flex-col">
           {isError ? (

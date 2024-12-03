@@ -85,7 +85,7 @@ export default function FormBuilderPad({
         </div>
       )}
 
-      {droppable.isOver && (
+      {droppable.isOver && elements.length === 0 && (
         <div className="w-full p-2">
           <div className="h-24 rounded-lg bg-secondary"></div>
         </div>

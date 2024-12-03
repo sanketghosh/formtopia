@@ -47,13 +47,15 @@ function FormElementComponent({
   const { required, helperText, label, placeHolder } = element.extraAttributes;
 
   return (
-    <div className="space-y-2 rounded-lg border bg-background/40 px-3 py-3">
+    <div className="flex w-full flex-col gap-3">
       <Label>
         {label}
         {required && "*"}
       </Label>
-      <Input placeholder={placeHolder} />
-      <p className="text-sm capitalize text-muted-foreground">{helperText}</p>
+      <Input placeholder={placeHolder} readOnly />
+      {helperText && (
+        <p className="text-sm capitalize text-muted-foreground">{helperText}</p>
+      )}
     </div>
   );
 }

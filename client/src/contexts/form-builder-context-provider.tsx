@@ -4,6 +4,7 @@ import { createContext, useState } from "react";
 type FormBuilderContextType = {
   elements: FormElementInstance[];
   addElementHandler: (index: number, element: FormElementInstance) => void;
+  removeElementHandler: (id: string) => void;
 };
 
 export const FormBuilderContext = createContext<FormBuilderContextType | null>(
@@ -25,9 +26,14 @@ const FormBuilderContextProvider = ({
     });
   };
 
+  const removeElementHandler = (id: string) => {
+    setElements((prev) => prev.filter((element) => element.id !== id));
+  };
+
   const contextValue: FormBuilderContextType = {
     addElementHandler: addElementHandler,
     elements: elements,
+    removeElementHandler: removeElementHandler,
   };
 
   return (
