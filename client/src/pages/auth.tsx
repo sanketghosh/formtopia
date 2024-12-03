@@ -9,7 +9,7 @@ export default function Auth() {
     <main className="flex min-h-screen w-full flex-col items-center justify-center space-y-5 p-4">
       <div className="flex w-[350px] flex-col items-center space-y-2 sm:w-[400px] md:w-[420px] lg:w-[450px]">
         <MainLink
-          hrefLink=""
+          hrefLink="/"
           className="gap-2 border-primary px-4 py-2 font-semibold text-primary"
           textStyle="text-3xl"
           iconStyle="size-7"

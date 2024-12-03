@@ -22,7 +22,7 @@ export default function FormBuilderSidebar({
         <div className="flex items-center gap-3">
           {!published && (
             <Dialog>
-              <DialogTrigger className="w-full">
+              <DialogTrigger className="w-full" asChild>
                 <Button className="w-full" variant={"default"} size={"sm"}>
                   <Globe2Icon />
                   Publish
@@ -32,7 +32,7 @@ export default function FormBuilderSidebar({
             </Dialog>
           )}
           <Dialog>
-            <DialogTrigger className="w-full">
+            <DialogTrigger className="w-full" asChild>
               <Button className="w-full" variant={"secondary"} size={"sm"}>
                 <SaveIcon />
                 Save

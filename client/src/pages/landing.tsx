@@ -1,6 +1,7 @@
 import MainLink from "@/components/commons/main-link";
-import { Button } from "@/components/ui/button";
-import { CircleCheckIcon } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { CircleCheckIcon, GithubIcon, ZapIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Preview() {
@@ -24,40 +25,57 @@ export default function Preview() {
         </header>
         <section className="flex flex-col items-center gap-10 py-10 xl:flex-row">
           <div className="flex-1 space-y-5">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-4xl">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque,
-              labore.
+            <h1 className="text-2xl font-semibold sm:text-3xl md:text-4xl lg:text-5xl xl:text-4xl">
+              Create forms people actually want to fill out without much hassle.
             </h1>
             <p className="text-[15px] text-muted-foreground lg:text-lg xl:text-base">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsum
-              doloremque ullam laboriosam tenetur doloribus, totam distinctio
-              reprehenderit molliqui aut? Voluptatum commodi atque nulla.
+              Make data collection easy with Formtopia. Create beautiful,
+              interactive forms and surveys that capture more responses. From
+              feedback to registrations, Formtopia’s intuitive design makes it
+              simple to engage and collect.
             </p>
             <div className="space-x-3">
-              <Button className="bg-sidebar-primary text-sidebar-foreground hover:text-background">
+              <Link
+                to={"/auth"}
+                className={cn(
+                  buttonVariants({
+                    size: "default",
+                  }),
+                )}
+              >
                 Get Started
-              </Button>
-              <Button variant={"secondary"} className="">
-                Get Started
-              </Button>
+                <ZapIcon />
+              </Link>
+              <a
+                href=""
+                className={cn(
+                  buttonVariants({
+                    size: "default",
+                    variant: "secondary",
+                  }),
+                )}
+              >
+                Source Code
+                <GithubIcon />
+              </a>
             </div>
             <div className="flex items-center gap-4 text-muted-foreground">
-              <div className="flex items-center text-sm">
+              <div className="flex items-center text-xs sm:text-sm">
                 <CircleCheckIcon size={16} className="mr-1" />
                 Open Source
               </div>
-              <div className="flex items-center text-sm">
+              <div className="flex items-center text-xs sm:text-sm">
                 <CircleCheckIcon size={16} className="mr-1" />
                 Free Trial
               </div>{" "}
-              <div className="flex items-center text-sm">
+              <div className="flex items-center text-xs sm:text-sm">
                 <CircleCheckIcon size={16} className="mr-1" />
                 No credit card
               </div>
             </div>
           </div>
-          <div className="w-full overflow-hidden rounded-lg bg-secondary p-2 xl:w-[600px]">
-            <div className="overflow-hidden rounded-lg">
+          <div className="w-full overflow-hidden rounded-lg border bg-secondary/40 p-2 xl:w-[600px]">
+            <div className="overflow-hidden rounded-lg border">
               <img
                 src="./hero-img.png"
                 alt=""

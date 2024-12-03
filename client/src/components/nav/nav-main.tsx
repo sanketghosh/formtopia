@@ -3,12 +3,10 @@ import {
   AppWindowIcon,
   BellIcon,
   ChartPieIcon,
-  CirclePlusIcon,
   LibraryIcon,
-  PlusCircleIcon,
   SettingsIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // components
 import {
@@ -18,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 const MENU_LINKS = [
   {
@@ -49,6 +47,9 @@ const MENU_LINKS = [
 ];
 
 export default function NavMain() {
+  const location = useLocation();
+  // console.log(location.pathname);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Explore Options</SidebarGroupLabel>
@@ -58,7 +59,11 @@ export default function NavMain() {
             <Link to={item.href}>
               <SidebarMenuButton
                 tooltip={item.text}
-                className="hover:bg-secondary"
+                className={cn(
+                  "hover:bg-sidebar-primary hover:text-sidebar-primary-foreground",
+                  item.href === location.pathname &&
+                    "bg-sidebar-primary hover:bg-sidebar-primary/90",
+                )}
               >
                 {item.icon && <item.icon />}
                 <span>{item.text}</span>

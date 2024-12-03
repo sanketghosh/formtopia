@@ -78,7 +78,7 @@ export default function Dashboard() {
           className={cn(
             buttonVariants({
               size: "lg",
-              variant: "ghost",
+              variant: "secondary",
             }),
           )}
           to={"/all-forms"}
