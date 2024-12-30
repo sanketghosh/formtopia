@@ -42,16 +42,46 @@ export default function FormBuilderPad({
 
       const isFormBuilderButtonElement =
         active.data?.current?.isFormBuilderButtonElement;
+      const isDroppingOverFormBuilderDropArea =
+        over.data?.current?.isFormBuilderDropArea;
 
-      if (isFormBuilderButtonElement) {
+      if (isFormBuilderButtonElement && isDroppingOverFormBuilderDropArea) {
         const type = active?.data?.current?.type;
         const newElement =
           FormElements[type as ElementsType].construct(uuidGenerator());
 
         //  add a new element
-        addElementHandler(0, newElement);
+        addElementHandler(elements.length, newElement);
+        return;
       }
       // console.log("@@EVENT --> DRAG END", event);
+
+      const isDroppingOverFormBuilderElementTopHalf =
+        over.data?.current?.isTopHalfFormElement;
+
+      const isDroppingOverFormBuilderElementBottomHalf =
+        over.data?.current?.isBottomHalfFormElement;
+
+      const isDroppingOverFormBuilderElement =
+        isDroppingOverFormBuilderElementTopHalf ||
+        isDroppingOverFormBuilderElementBottomHalf;
+
+      if (isFormBuilderButtonElement && isDroppingOverFormBuilderElement) {
+        const type = active?.data?.current?.type;
+        const newElement =
+          FormElements[type as ElementsType].construct(uuidGenerator());
+
+        const overElementIndex = elements.findIndex((el) => el.id === over.id);
+
+        let indexForNewElement = overElementIndex;
+        if (isDroppingOverFormBuilderElementBottomHalf) {
+          indexForNewElement = overElementIndex + 1;
+        }
+
+        //  add a new element
+        addElementHandler(indexForNewElement, newElement);
+        return;
+      }
     },
   });
 

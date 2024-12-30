@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
 
 const type: ElementsType = "TextField";
 
@@ -101,19 +102,99 @@ function PropertiesComponent({
 
   return (
     <Form {...form}>
-      <form onBlur={form.handleSubmit(applyChanges)}>
+      <form
+        onBlur={form.handleSubmit(applyChanges)}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+        className="space-y-6"
+      >
         <FormField
           control={form.control}
           name="label"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="rounded-md border p-3 shadow-md">
               <FormLabel>Label</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.currentTarget.blur();
+                  }}
+                />
               </FormControl>
               <FormDescription>
                 The label of the field <br /> It will be displayed above the
                 field.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="placeHolder"
+          render={({ field }) => (
+            <FormItem className="rounded-md border p-3 shadow-md">
+              <FormLabel>Placeholder</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.currentTarget.blur();
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                The placeholder of the field <br /> It will be displayed as the
+                placeholder value of input field.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="helperText"
+          render={({ field }) => (
+            <FormItem className="rounded-md border p-3 shadow-md">
+              <FormLabel>Helper Text</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.currentTarget.blur();
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                The helper of the field <br /> It will be displayed below the
+                field.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="required"
+          render={({ field }) => (
+            <FormItem className="rounded-md border p-3 shadow-md">
+              <FormLabel>Required</FormLabel>
+
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="airplane-mode"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                  <Label htmlFor="airplane-mode">Toggle to change</Label>
+                </div>
+              </FormControl>
+              <FormDescription>
+                The requirement of the field <br /> On enabling this, the field
+                will be unavoidable.
               </FormDescription>
               <FormMessage />
             </FormItem>
