@@ -23,8 +23,13 @@ export default function FormBuilderPad({
 }: FormBuilderPadProps) {
   // const [elements, setElements] = useState<FormElementInstance[]>([]);
 
-  const { elements, addElementHandler, selectedElement, setSelectedElement } =
-    useFormBuilderContext();
+  const {
+    elements,
+    addElementHandler,
+    selectedElement,
+    setSelectedElement,
+    removeElementHandler,
+  } = useFormBuilderContext();
 
   // console.log(elements, addElementHandler);
 
@@ -45,6 +50,7 @@ export default function FormBuilderPad({
       const isDroppingOverFormBuilderDropArea =
         over.data?.current?.isFormBuilderDropArea;
 
+      // first scenario
       if (isFormBuilderButtonElement && isDroppingOverFormBuilderDropArea) {
         const type = active?.data?.current?.type;
         const newElement =
@@ -66,12 +72,17 @@ export default function FormBuilderPad({
         isDroppingOverFormBuilderElementTopHalf ||
         isDroppingOverFormBuilderElementBottomHalf;
 
+      // second scenario
       if (isFormBuilderButtonElement && isDroppingOverFormBuilderElement) {
         const type = active?.data?.current?.type;
         const newElement =
           FormElements[type as ElementsType].construct(uuidGenerator());
 
-        const overElementIndex = elements.findIndex((el) => el.id === over.id);
+        const overId = over.data?.current?.elementId;
+        const overElementIndex = elements.findIndex((el) => el.id === overId);
+        if (overElementIndex === -1) {
+          throw new Error("ERROR! Element not found.");
+        }
 
         let indexForNewElement = overElementIndex;
         if (isDroppingOverFormBuilderElementBottomHalf) {
@@ -81,6 +92,32 @@ export default function FormBuilderPad({
         //  add a new element
         addElementHandler(indexForNewElement, newElement);
         return;
+      }
+
+      // third scenario
+      const isDraggingFormElement = active.data?.current?.isFormBuilderElement;
+
+      if (isDraggingFormElement && isDroppingOverFormBuilderElement) {
+        const activeId = active.data?.current?.elementId;
+        const overId = over.data?.current?.elementId;
+
+        const activeElementIndex = elements.findIndex(
+          (el) => el.id === activeId,
+        );
+
+        const overElementIndex = elements.findIndex((el) => el.id === overId);
+
+        if (activeElementIndex === -1 || overElementIndex === -1) {
+          throw new Error("ERROR! Element not found.");
+        }
+        const activeElement = { ...elements[activeElementIndex] };
+        removeElementHandler(activeId);
+
+        let indexForNewElement = overElementIndex;
+        if (isDroppingOverFormBuilderElementBottomHalf) {
+          indexForNewElement = overElementIndex + 1;
+        }
+        addElementHandler(indexForNewElement, activeElement);
       }
     },
   });
