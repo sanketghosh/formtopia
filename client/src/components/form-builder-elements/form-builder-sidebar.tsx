@@ -1,13 +1,16 @@
 // packages
 import { Globe2Icon, SaveIcon } from "lucide-react";
 
+// local modules
+import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
+
 // components
 import SaveFormDialog from "@/components/dialogs/save-form-dialog";
-import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
-import SidebarFormElementButton from "@/components/form-builder-elements/sidebar-form-element-button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import PublishFormDialog from "@/components/dialogs/publish-form-dialog";
+import ElementsPropertiesSidebar from "@/components/form-builder-elements/sidebar/elements-properties-sidebar";
+import ElementsButtonsSidebar from "@/components/form-builder-elements/sidebar/elements-buttons-sidebar";
 
 type FormBuilderSidebarProps = {
   published: boolean;
@@ -16,6 +19,8 @@ type FormBuilderSidebarProps = {
 export default function FormBuilderSidebar({
   published,
 }: FormBuilderSidebarProps) {
+  const { selectedElement, setSelectedElement } = useFormBuilderContext();
+
   return (
     <aside className="sticky top-0 hidden h-screen w-[450px] overflow-y-auto border-l border-sidebar-border bg-sidebar lg:block">
       <div className="space-y-6 px-5 py-6">
@@ -42,17 +47,8 @@ export default function FormBuilderSidebar({
           </Dialog>
         </div>
 
-        <div className="space-y-3">
-          <h2 className="font-medium">Elements</h2>
-          <div className="grid grid-cols-3 gap-3">
-            <SidebarFormElementButton formElement={FormElements.TextField} />
-            {/*   <SidebarFormElementButton formElement={FormElements.TextField} />
-            <SidebarFormElementButton formElement={FormElements.TextField} />
-            <SidebarFormElementButton formElement={FormElements.TextField} />
-            <SidebarFormElementButton formElement={FormElements.TextField} />
-            <SidebarFormElementButton formElement={FormElements.TextField} /> */}
-          </div>
-        </div>
+        {!selectedElement && <ElementsButtonsSidebar />}
+        {selectedElement && <ElementsPropertiesSidebar />}
       </div>
     </aside>
   );

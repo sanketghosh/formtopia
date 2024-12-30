@@ -5,6 +5,8 @@ type FormBuilderContextType = {
   elements: FormElementInstance[];
   addElementHandler: (index: number, element: FormElementInstance) => void;
   removeElementHandler: (id: string) => void;
+  updateElementHandler: (id: string, element: FormElementInstance) => void;
+
   selectedElement: FormElementInstance | null;
   setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>;
 };
@@ -34,12 +36,22 @@ const FormBuilderContextProvider = ({
     setElements((prev) => prev.filter((element) => element.id !== id));
   };
 
+  const updateElementHandler = (id: string, element: FormElementInstance) => {
+    setElements((prev) => {
+      const newElements = [...prev];
+      const index = newElements.findIndex((el) => el.id === id);
+      newElements[index] = element;
+      return newElements;
+    });
+  };
+
   const contextValue: FormBuilderContextType = {
     addElementHandler: addElementHandler,
     elements: elements,
     removeElementHandler: removeElementHandler,
     selectedElement,
     setSelectedElement,
+    updateElementHandler,
   };
 
   return (
