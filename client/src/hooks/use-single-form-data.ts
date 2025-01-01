@@ -1,11 +1,34 @@
-import { FormData } from "@/types";
+export type Submission = {
+  id: String;
+  submittedAt: Date;
+  city?: String;
+  country?: String;
+  browser?: String;
+  os?: String;
+  device?: String;
+};
+
+export type FormData = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  published: boolean;
+  title: string;
+  description: string;
+  content: string;
+  visitsCount: number;
+  submissionsCount: number;
+  shareURL: string;
+  formSubmissions: Submission[];
+};
+
 import { create } from "zustand";
 
 interface FormStoreType {
   formId: string | null;
-  formData: any | null;
+  formData: FormData | null;
   setFormId: (id: string) => void;
-  setFormData: (data: any) => void;
+  setFormData: (data: FormData) => void;
 }
 
 export const useSingleFormData = create<FormStoreType>((set) => ({

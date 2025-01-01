@@ -217,7 +217,7 @@ export const updateFormHandler = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
     const { formId } = req.params;
-    const { title, description, content } = req.body;
+    const { formContent: content } = req.body;
 
     // if unauthorized
     if (!userId) {
@@ -240,19 +240,26 @@ export const updateFormHandler = catchErrors(
       });
     }
 
+    // Validate content
+    if (!content || typeof content !== "string") {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Content is invalid or missing.",
+      });
+    }
+
+    console.log("Received content:", content); // Debugging log
+
     // Update the form with new data
     const updatedForm = await db.form.update({
       where: { id: formId },
       data: {
-        ...(title && { title }),
-        ...(description && { description }),
         ...(content && { content }),
         // ...(typeof published === "boolean" && { published }),
       },
     });
 
     if (!updatedForm) {
-      return res.status(BAD_REQUEST).json({
+      res.status(BAD_REQUEST).json({
         message: "ERROR! Failed to update the form.",
       });
     }

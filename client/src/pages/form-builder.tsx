@@ -20,9 +20,11 @@ import DragOverlayWrapper from "@/components/form-builder-elements/drag-overlay-
 import FormBuilderPad from "@/components/form-builder-elements/form-builder-pad";
 import { useSingleFormData } from "@/hooks/use-single-form-data";
 import { useEffect } from "react";
+import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 
 export default function FormBuilder() {
   const { setFormId, setFormData, formId, formData } = useSingleFormData();
+  const { setElements } = useFormBuilderContext();
 
   const { id } = useParams<{ id?: string }>();
   console.log(id);
@@ -38,7 +40,7 @@ export default function FormBuilder() {
   useEffect(() => {
     if (data && id) {
       console.log("Fetched Data:", data); // Log fetched data
-      setFormData(data);
+      setFormData(data.data);
       setFormId(id);
     }
   }, [data, id, setFormData, setFormId]);
@@ -58,6 +60,13 @@ export default function FormBuilder() {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
+  // console.log("@@@form builder", data.data.content);
+
+  useEffect(() => {
+    const elements = JSON.parse(formData?.content!);
+    setElements(elements);
+  }, [formData, setElements]);
+
   return (
     <DndContext sensors={sensors}>
       <div className="flex min-h-full">
@@ -75,11 +84,7 @@ export default function FormBuilder() {
                 </div>
               ) : (
                 <>
-                  <FormBuilderNav
-                    published={data?.data.published}
-                    title={data?.data.title}
-                    description={data?.data.description}
-                  />
+                  <FormBuilderNav />
                   {/* main builder */}
                   <div className="bg-chequered-size flex h-full justify-center bg-chequered p-4 md:p-6 lg:p-8">
                     <FormBuilderPad />

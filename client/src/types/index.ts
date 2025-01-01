@@ -74,27 +74,3 @@ export type FormElementsType = {
  *                                 *
  *                                 *
  **********************************/
-
-export type Submission = {
-  id: String;
-  submittedAt: Date;
-  city?: String;
-  country?: String;
-  browser?: String;
-  os?: String;
-  device?: String;
-};
-
-export type FormData = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  published: boolean;
-  title: string;
-  description: string;
-  content: string;
-  visitsCount: number;
-  submissionsCount: number;
-  shareURL: string;
-  formSubmissions: Submission[];
-};

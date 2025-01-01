@@ -3,6 +3,8 @@ import { createContext, Dispatch, SetStateAction, useState } from "react";
 
 type FormBuilderContextType = {
   elements: FormElementInstance[];
+  setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
+
   addElementHandler: (index: number, element: FormElementInstance) => void;
   removeElementHandler: (id: string) => void;
   updateElementHandler: (id: string, element: FormElementInstance) => void;
@@ -48,6 +50,7 @@ const FormBuilderContextProvider = ({
   const contextValue: FormBuilderContextType = {
     addElementHandler: addElementHandler,
     elements: elements,
+    setElements,
     removeElementHandler: removeElementHandler,
     selectedElement,
     setSelectedElement,

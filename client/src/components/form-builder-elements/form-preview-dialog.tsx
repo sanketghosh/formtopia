@@ -7,17 +7,16 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 import { FormElements } from "./form-builder-elements";
 import SingleElementBaseStyle from "./single-element-base-style";
+import { useSingleFormData } from "@/hooks/use-single-form-data";
 
-type FormPreviewDialogProps = {
+/* type FormPreviewDialogProps = {
   title: string;
   description?: string;
-};
+}; */
 
-export default function FormPreviewDialog({
-  title,
-  description,
-}: FormPreviewDialogProps) {
+export default function FormPreviewDialog() {
   const { elements } = useFormBuilderContext();
+  const { formData } = useSingleFormData();
 
   return (
     <Dialog>
@@ -37,9 +36,9 @@ export default function FormPreviewDialog({
         <div className="bg-chequered-size flex h-full w-full items-center justify-center overflow-y-auto bg-chequered p-4 md:p-6 lg:p-8">
           <div className="max-h-[650px] min-h-[800px] w-[650px] space-y-6 overflow-y-auto rounded-lg bg-sidebar p-3">
             <div>
-              <h2 className="text-lg font-semibold">{title}</h2>
+              <h2 className="text-lg font-semibold">{formData?.title}</h2>
               <p className="text-sm font-medium text-muted-foreground">
-                {description}
+                {formData?.description}
               </p>
             </div>
             {elements.map((element) => {

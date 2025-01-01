@@ -51,24 +51,22 @@ export const fetchSingleFormAction = async (formId: string) => {
 };
 
 type UpdateFormActionType = {
-  formId: string;
-  formContent: string;
+  formId?: string;
+  formContent?: string;
 };
-
-/**
- *
- * @param param0
- * @returns
- */
 
 export const updateFormAction = async ({
   formContent,
   formId,
 }: UpdateFormActionType) => {
-  const response = await axiosApi.post(
-    `/api/v1/form/update-form/${formId}`,
+  console.log({
     formContent,
-  );
+    formId,
+  });
+
+  const response = await axiosApi.put(`/api/v1/form/update-form/${formId}`, {
+    formContent,
+  });
   console.log(response.data);
   return response.data;
 };

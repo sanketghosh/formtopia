@@ -6,9 +6,11 @@ import { useMutation } from "@tanstack/react-query";
 import { updateFormAction } from "@/actions/form.actions";
 import { toast } from "sonner";
 import { useSingleFormData } from "@/hooks/use-single-form-data";
+import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 
 export default function SaveFormDialog() {
   const { formId } = useSingleFormData();
+  const { elements } = useFormBuilderContext();
 
   const mutation = useMutation({
     mutationFn: updateFormAction,
@@ -20,10 +22,14 @@ export default function SaveFormDialog() {
     },
   });
 
-  const formSubmitHandler = () => {
+  const formSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const FormJSONData = JSON.stringify(elements);
+
     mutation.mutate({
-      formId: "",
-      formContent: "",
+      formId: formId!,
+      formContent: FormJSONData,
     });
   };
 
