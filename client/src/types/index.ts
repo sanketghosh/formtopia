@@ -49,7 +49,9 @@ export type FormElement = {
   formElementComponent: React.FC<{
     elementInstance: FormElementInstance;
   }>;
-  formComponent: React.FC;
+  formComponent: React.FC<{
+    elementInstance: FormElementInstance;
+  }>;
   propertiesComponent: React.FC<{
     elementInstance: FormElementInstance;
   }>;
@@ -63,4 +65,36 @@ export type FormElementInstance = {
 
 export type FormElementsType = {
   [key in ElementsType]: FormElement;
+};
+
+/***********************************
+ *                                 *
+ *                                 *
+ *                                 *
+ *                                 *
+ *                                 *
+ **********************************/
+
+export type Submission = {
+  id: String;
+  submittedAt: Date;
+  city?: String;
+  country?: String;
+  browser?: String;
+  os?: String;
+  device?: String;
+};
+
+export type FormData = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  published: boolean;
+  title: string;
+  description: string;
+  content: string;
+  visitsCount: number;
+  submissionsCount: number;
+  shareURL: string;
+  formSubmissions: Submission[];
 };

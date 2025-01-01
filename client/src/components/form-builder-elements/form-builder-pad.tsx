@@ -12,15 +12,7 @@ import { ElementsType } from "@/types";
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
 import FormElementWrapper from "@/components/form-builder-elements/form-element-wrapper";
 
-type FormBuilderPadProps = {
-  title: string;
-  description?: string;
-};
-
-export default function FormBuilderPad({
-  title,
-  description,
-}: FormBuilderPadProps) {
+export default function FormBuilderPad() {
   // const [elements, setElements] = useState<FormElementInstance[]>([]);
 
   const {
@@ -135,14 +127,14 @@ export default function FormBuilderPad({
         droppable.isOver && "ring-2 ring-primary",
       )}
     >
-      {elements.length > 0 && (
+      {/* {elements.length > 0 && (
         <div className="mb-3 p-2">
           <h1 className="text-xl font-semibold lg:text-2xl">{title}</h1>
           <p className="text-sm font-medium text-muted-foreground md:text-base">
             {description}
           </p>
         </div>
-      )}
+      )} */}
       {!droppable.isOver && elements.length === 0 && (
         <div className="flex h-full w-full select-none flex-col items-center justify-center gap-2 text-muted-foreground">
           <GripIcon size={30} />

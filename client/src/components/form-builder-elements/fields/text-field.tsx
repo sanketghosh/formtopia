@@ -56,7 +56,7 @@ export const TextFieldFormElement: FormElement = {
   },
 
   formElementComponent: FormElementComponent,
-  formComponent: () => <div>Form Component</div>,
+  formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
 };
 
@@ -225,6 +225,30 @@ function FormElementComponent({
         {required && "*"}
       </Label>
       <Input placeholder={placeHolder} readOnly />
+      {helperText && (
+        <p className="text-sm capitalize text-muted-foreground">{helperText}</p>
+      )}
+    </div>
+  );
+}
+
+/***************************** */
+
+function FormComponent({
+  elementInstance,
+}: {
+  elementInstance: FormElementInstance;
+}) {
+  const element = elementInstance as CustomInstance;
+  const { required, helperText, label, placeHolder } = element.extraAttributes;
+
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <Label>
+        {label}
+        {required && "*"}
+      </Label>
+      <Input placeholder={placeHolder} />
       {helperText && (
         <p className="text-sm capitalize text-muted-foreground">{helperText}</p>
       )}

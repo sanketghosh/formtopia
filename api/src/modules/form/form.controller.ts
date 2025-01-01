@@ -179,6 +179,18 @@ export const fetchSingleFormHandler = catchErrors(
         submissionsCount: true,
         content: true,
         shareURL: true,
+        formSubmissions: {
+          select: {
+            id: true,
+            submittedAt: true,
+            content: true,
+            city: true,
+            country: true,
+            browser: true,
+            os: true,
+            device: true,
+          },
+        },
       },
     });
 
@@ -192,6 +204,62 @@ export const fetchSingleFormHandler = catchErrors(
     res.status(OK).json({
       message: "SUCCESS! Form fetched successfully.",
       data: form,
+    });
+  }
+);
+
+/**
+ *
+ *
+ *
+ */
+export const updateFormHandler = catchErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    const { formId } = req.params;
+    const { title, description, content } = req.body;
+
+    // if unauthorized
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "ERROR! Unauthorized. Cannot fulfill your request.",
+      });
+    }
+
+    // Fetch the form to ensure it exists and belongs to the user
+    const existingForm = await db.form.findFirst({
+      where: {
+        id: formId,
+        userId: userId,
+      },
+    });
+
+    if (!existingForm) {
+      return res.status(NOT_FOUND).json({
+        message: "ERROR! Form not found or you do not have access to it.",
+      });
+    }
+
+    // Update the form with new data
+    const updatedForm = await db.form.update({
+      where: { id: formId },
+      data: {
+        ...(title && { title }),
+        ...(description && { description }),
+        ...(content && { content }),
+        // ...(typeof published === "boolean" && { published }),
+      },
+    });
+
+    if (!updatedForm) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Failed to update the form.",
+      });
+    }
+
+    res.status(OK).json({
+      message: "SUCCESS! Form updated successfully.",
+      data: updatedForm,
     });
   }
 );

@@ -18,8 +18,12 @@ import FormBuilderNav from "@/components/form-builder-elements/form-builder-nav"
 import FormBuilderSidebar from "@/components/form-builder-elements/form-builder-sidebar";
 import DragOverlayWrapper from "@/components/form-builder-elements/drag-overlay-wrapper";
 import FormBuilderPad from "@/components/form-builder-elements/form-builder-pad";
+import { useSingleFormData } from "@/hooks/use-single-form-data";
+import { useEffect } from "react";
 
 export default function FormBuilder() {
+  const { setFormId, setFormData, formId, formData } = useSingleFormData();
+
   const { id } = useParams<{ id?: string }>();
   console.log(id);
 
@@ -28,6 +32,16 @@ export default function FormBuilder() {
     queryFn: () => fetchSingleFormAction(id!),
     staleTime: 5000,
   });
+
+  // console.log("fetch single form data", data.data);
+
+  useEffect(() => {
+    if (data && id) {
+      console.log("Fetched Data:", data); // Log fetched data
+      setFormData(data);
+      setFormId(id);
+    }
+  }, [data, id, setFormData, setFormId]);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -64,13 +78,11 @@ export default function FormBuilder() {
                   <FormBuilderNav
                     published={data?.data.published}
                     title={data?.data.title}
+                    description={data?.data.description}
                   />
                   {/* main builder */}
                   <div className="bg-chequered-size flex h-full justify-center bg-chequered p-4 md:p-6 lg:p-8">
-                    <FormBuilderPad
-                      title={data?.data.title}
-                      description={data?.data.description}
-                    />
+                    <FormBuilderPad />
                   </div>
                 </>
               )}

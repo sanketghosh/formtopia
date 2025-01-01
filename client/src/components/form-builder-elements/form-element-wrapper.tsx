@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Trash2Icon } from "lucide-react";
 import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 import { cn } from "@/lib/utils";
+import SingleElementBaseStyle from "./single-element-base-style";
 
 export default function FormElementWrapper({
   element,
@@ -97,14 +98,11 @@ export default function FormElementWrapper({
       {topHalf.isOver && (
         <div className="absolute top-0 h-2 w-full rounded-md rounded-b-none bg-sidebar-primary" />
       )}
-      <div
-        className={cn(
-          "pointer-events-none flex h-32 items-center rounded-lg border bg-background/40 px-3 py-3 opacity-100 transition-all",
-          mouseIsOver && "opacity-25",
-        )}
+      <SingleElementBaseStyle
+        className={cn(mouseIsOver && "opacity-25", "pointer-events-none")}
       >
         <FormElement elementInstance={element} />
-      </div>
+      </SingleElementBaseStyle>
       {bottomHalf.isOver && (
         <div className="absolute bottom-0 h-2 w-full rounded-md rounded-t-none bg-sidebar-primary" />
       )}

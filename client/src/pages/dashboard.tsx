@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import FormCreateDialog from "@/components/dialogs/form-create-dialog";
+import AllStats from "@/components/charts/all-stats";
 
 type StatsCardsType = {
   title: string;
@@ -127,6 +128,7 @@ export default function Dashboard() {
       </div>
 
       <Separator />
+      <AllStats />
     </div>
   );
 }

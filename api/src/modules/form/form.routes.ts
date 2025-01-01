@@ -8,6 +8,7 @@ import {
   fetchSingleFormHandler,
   formCreateHandler,
   formStatsHandler,
+  updateFormHandler,
 } from "@/modules/form/form.controller";
 import { FormCreateSchema } from "@/modules/form/form.schema";
 import { schemaValidator } from "@/middlewares";
@@ -23,5 +24,6 @@ router.post(
 );
 router.get("/form/fetch-forms", verifyToken, fetchFormsHandler);
 router.get("/form/single-form/:formId", verifyToken, fetchSingleFormHandler);
+router.put("/form/update-form/:formId", verifyToken, updateFormHandler);
 
 export default router;
