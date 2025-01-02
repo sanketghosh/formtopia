@@ -1,8 +1,13 @@
 // packages
-import { CircleCheckIcon, CopyIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CircleCheckIcon,
+  CopyIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   DndContext,
   MouseSensor,
@@ -17,6 +22,7 @@ import { fetchSingleFormAction } from "@/actions/form.actions";
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 import { useSingleFormData } from "@/hooks/use-single-form-data";
 import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
+import { useConfetti } from "@/hooks/use-confetti";
 
 // components
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,11 +39,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useConfetti } from "@/hooks/use-confetti";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function FormBuilder() {
-  const { setFormId, setFormData, formData } = useSingleFormData();
+  const { setFormId, setFormData, formData, formId } = useSingleFormData();
   const { setElements } = useFormBuilderContext();
 
   const { id } = useParams<{ id?: string }>();
@@ -53,7 +58,7 @@ export default function FormBuilder() {
   }, [formData, setElements]);
 
   const { data, isError, error, isLoading } = useQuery({
-    queryKey: ["fetch-single-form"],
+    queryKey: ["fetch-single-form", id],
     queryFn: () => fetchSingleFormAction(id!),
     staleTime: 5000,
   });
@@ -62,7 +67,7 @@ export default function FormBuilder() {
 
   useEffect(() => {
     if (data && id) {
-      console.log("Fetched Data:", data); // Log fetched data
+      // console.log("Fetched Data:", data); // Log fetched data
       setFormData(data.data);
       setFormId(id);
     }
@@ -83,8 +88,12 @@ export default function FormBuilder() {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
+  // console.log("@@form builder", formData?.id);
+
   if (formData?.published) {
-    return <IsFormPublished shareURL={formData?.shareURL} />;
+    return (
+      <IsFormPublished shareURL={formData?.shareURL} formId={formData?.id} />
+    );
   }
 
   return (
@@ -121,7 +130,13 @@ export default function FormBuilder() {
   );
 }
 
-function IsFormPublished({ shareURL }: { shareURL?: string }) {
+function IsFormPublished({
+  shareURL,
+  formId,
+}: {
+  shareURL?: string;
+  formId: string;
+}) {
   const [isCopied, setIsCopied] = useState(false);
   const { confetti, confettiOff, confettiOn } = useConfetti();
 
@@ -159,13 +174,22 @@ function IsFormPublished({ shareURL }: { shareURL?: string }) {
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-sidebar p-4">
-      {confetti && <Confetti className="h-full w-full" />}
+      {confetti && (
+        <Confetti
+          className="h-full w-full"
+          numberOfPieces={2000}
+          recycle={false}
+        />
+      )}
       <Card className="lg:w-[500px]">
         <CardHeader>
           <CardTitle className="text-xl">Form Published</CardTitle>
           <CardDescription>
             Your form has been published, you cannot edit the form anymore.{" "}
-            <br /> Users can access the form through the link given below.
+            <br />{" "}
+            <span className="text-foreground">
+              *Share this link with users so that they can access the form.
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent className="flex items-center gap-2">
@@ -178,11 +202,33 @@ function IsFormPublished({ shareURL }: { shareURL?: string }) {
             {isCopied ? <CircleCheckIcon /> : <CopyIcon />}
           </Button>
         </CardContent>
-        <CardFooter className="text-sm font-medium leading-tight">
+        <CardFooter className="flex flex-col text-sm font-medium leading-tight text-muted-foreground">
           {/*  <Button className="w-full" onClick={handleNativeShare}>
             Share Form
           </Button> */}
-          Share this link with user so that they can fill and submit the form.
+
+          <div className="flex w-full items-center justify-between">
+            <Link
+              to={"/dashboard"}
+              className={buttonVariants({
+                variant: "secondary",
+                size: "sm",
+              })}
+            >
+              <ArrowLeftIcon size={17} />
+              Dashboard
+            </Link>
+            <Link
+              to={`/single-form-data/${formId}`}
+              className={buttonVariants({
+                variant: "secondary",
+                size: "sm",
+              })}
+            >
+              Form Data
+              <ArrowRightIcon size={17} />
+            </Link>
+          </div>
         </CardFooter>
       </Card>
     </div>

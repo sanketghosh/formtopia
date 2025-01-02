@@ -319,3 +319,69 @@ export const publishFormHandler = catchErrors(
     });
   }
 );
+
+/**
+ *
+ */
+export const singleFormStatsHandler = catchErrors(
+  async (req: Request, res: Response): Promise<void | any> => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    // If the user is unauthorized
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "ERROR! Unauthorized. User not found.",
+      });
+    }
+
+    // Check if the form exists and belongs to the user
+    const form = await db.form.findFirst({
+      where: {
+        id: formId,
+        userId: userId,
+      },
+    });
+
+    // if form does not exist
+    if (!form) {
+      res.status(NOT_FOUND).json({
+        message: "ERROR! Form not found or you do not have access to it.",
+      });
+    }
+
+    // Calculate stats for the specific form
+    const stats = await db.form.aggregate({
+      where: {
+        id: formId,
+        userId: userId,
+      },
+      _sum: {
+        visitsCount: true,
+        submissionsCount: true,
+      },
+    });
+
+    // Extract and calculate stats
+    const visits = stats._sum.visitsCount || 0;
+    const submissions = stats._sum.submissionsCount || 0;
+    let submissionRate = 0;
+    if (visits > 0) {
+      submissionRate = (submissions / visits) * 100;
+    }
+    const bounceRate = 100 - submissionRate;
+
+    const _data = {
+      formId,
+      visits,
+      submissions,
+      submissionRate,
+      bounceRate,
+    };
+
+    res.status(OK).json({
+      message: "SUCCESS! Stats for the form fetched successfully.",
+      data: _data,
+    });
+  }
+);

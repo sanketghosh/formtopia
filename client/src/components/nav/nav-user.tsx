@@ -51,6 +51,9 @@ export default function NavUser() {
       toast.success(data.message);
       localStorage.removeItem("user_data");
       navigate("/");
+      setInterval(() => {
+        navigate(0);
+      }, 2000);
     },
     onError: (error: Error) => {
       toast.error(error.message);

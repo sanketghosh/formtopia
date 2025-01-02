@@ -1,7 +1,7 @@
 // packages
 import * as React from "react";
 import { CircleIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // components
 import {
@@ -23,8 +23,13 @@ import { useSingleFormData } from "@/hooks/use-single-form-data";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { formData } = useSingleFormData();
+  const location = useLocation();
 
-  if (formData?.published) {
+  const isPublished = formData?.published;
+  // console.log(isPublished);
+  const hideSidebarRoute = location.pathname.startsWith("/create-form");
+
+  if (isPublished && hideSidebarRoute) {
     return null;
   }
 

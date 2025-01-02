@@ -81,3 +81,15 @@ export const publishFormAction = async (formId?: string) => {
   console.log(response.data);
   return response.data;
 };
+
+/**
+ *
+ * @returns
+ */
+export const singleFormStatsAction = async (formId: string) => {
+  const response = await axiosApi.get(
+    `/api/v1/form/get-single-form-stats/${formId}`,
+  );
+  console.log(response.data);
+  return response.data;
+};

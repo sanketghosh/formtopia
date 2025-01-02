@@ -1,11 +1,14 @@
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
 export type Submission = {
-  id: String;
+  id: string;
   submittedAt: Date;
-  city?: String;
-  country?: String;
-  browser?: String;
-  os?: String;
-  device?: String;
+  city?: string;
+  country?: string;
+  browser?: string;
+  os?: string;
+  device?: string;
 };
 
 export type FormData = {
@@ -22,8 +25,6 @@ export type FormData = {
   formSubmissions: Submission[];
 };
 
-import { create } from "zustand";
-
 interface FormStoreType {
   formId: string | null;
   formData: FormData | null;
@@ -31,15 +32,26 @@ interface FormStoreType {
   setFormData: (data: FormData) => void;
 }
 
-export const useSingleFormData = create<FormStoreType>((set) => ({
-  formId: null,
-  formData: null,
-  setFormId: (formId) => {
-    // console.log("setting form id", formId),
-    set({ formId });
-  },
-  setFormData: (formData) => {
-    // console.log("setting form data", formData),
-    set({ formData });
-  },
-}));
+export const useSingleFormData = create<FormStoreType>()(
+  persist(
+    (set) => ({
+      formId: null,
+      formData: null,
+      setFormId: (formId) => {
+        console.log("Setting Form ID:", formId);
+        set({ formId });
+      },
+      setFormData: (formData) => {
+        console.log("Setting Form Data:", formData);
+        set({ formData });
+      },
+    }),
+    {
+      name: "single-form-data-store", // Key to save in localStorage
+      partialize: (state) => ({
+        formId: state.formId,
+        formData: state.formData,
+      }), // Optional: Save only selected fields
+    },
+  ),
+);
