@@ -21,6 +21,7 @@ const AllForms = lazy(() => import("./all-forms"));
 const Notifications = lazy(() => import("./notifications"));
 const Settings = lazy(() => import("./settings"));
 const Account = lazy(() => import("./account"));
+const SubmitForm = lazy(() => import("./submit-form"));
 
 export {
   Auth,
@@ -34,4 +35,5 @@ export {
   Notifications,
   Settings,
   Account,
+  SubmitForm,
 };

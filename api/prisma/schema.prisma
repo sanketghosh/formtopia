@@ -39,7 +39,7 @@ model Form {
   visitsCount      Int @default(0)
   submissionsCount Int @default(0)
 
-  shareURL String @default(uuid())
+  shareURL String @default(uuid()) @unique
 
   formSubmissions FormSubmission[]
   user            User             @relation(fields: [userId], references: [id])

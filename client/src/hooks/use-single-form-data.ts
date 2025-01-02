@@ -1,35 +1,22 @@
+import { FormData } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export type Submission = {
-  id: string;
-  submittedAt: Date;
-  city?: string;
-  country?: string;
-  browser?: string;
-  os?: string;
-  device?: string;
-};
-
-export type FormData = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  published: boolean;
-  title: string;
-  description: string;
-  content: string;
-  visitsCount: number;
-  submissionsCount: number;
-  shareURL: string;
-  formSubmissions: Submission[];
-};
 
 interface FormStoreType {
   formId: string | null;
   formData: FormData | null;
+  dataQueryState: {
+    isError: boolean;
+    error: any;
+    isLoading: boolean;
+  };
   setFormId: (id: string) => void;
   setFormData: (data: FormData) => void;
+  setDataQueryingState: (state: {
+    isError: boolean;
+    error: Error | null;
+    isLoading: boolean;
+  }) => void;
 }
 
 export const useSingleFormData = create<FormStoreType>()(
@@ -37,6 +24,11 @@ export const useSingleFormData = create<FormStoreType>()(
     (set) => ({
       formId: null,
       formData: null,
+      dataQueryState: {
+        isError: false,
+        error: null,
+        isLoading: false,
+      },
       setFormId: (formId) => {
         console.log("Setting Form ID:", formId);
         set({ formId });
@@ -45,12 +37,17 @@ export const useSingleFormData = create<FormStoreType>()(
         console.log("Setting Form Data:", formData);
         set({ formData });
       },
+      setDataQueryingState: (dataQueryState) => {
+        console.log("Setting Query State:", dataQueryState);
+        set({ dataQueryState });
+      },
     }),
     {
       name: "single-form-data-store", // Key to save in localStorage
       partialize: (state) => ({
         formId: state.formId,
         formData: state.formData,
+        dataQueryState: state.dataQueryState,
       }), // Optional: Save only selected fields
     },
   ),

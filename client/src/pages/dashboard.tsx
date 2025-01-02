@@ -20,12 +20,8 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import FormCreateDialog from "@/components/dialogs/form-create-dialog";
 import AllStats from "@/components/charts/all-stats";
-
-type StatsCardsType = {
-  title: string;
-  desc?: string;
-  statsNumber: number;
-};
+import StatsCard from "@/components/cards/stats-card";
+import { StatsCardsType } from "@/types";
 
 export default function Dashboard() {
   const { user } = useAuthContext();
@@ -98,31 +94,16 @@ export default function Dashboard() {
         </h2>
         <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {statsCards.map((item: StatsCardsType, idx) => (
-            <Card
-              className="cursor-pointer transition-all hover:bg-secondary/30"
+            <StatsCard
               key={idx}
-            >
-              <CardHeader>
-                <CardTitle>{item.title}</CardTitle>
-                <CardDescription>{item.desc}</CardDescription>
-              </CardHeader>
-              <CardContent className="text-2xl font-semibold md:text-3xl lg:text-4xl">
-                {isError ? (
-                  <p className="text-sm text-destructive">{error.message}</p>
-                ) : (
-                  <>
-                    {isLoading ? (
-                      <Loader2Icon className="animate-spin text-muted-foreground" />
-                    ) : (
-                      <>
-                        {item.statsNumber}
-                        {idx === 2 || idx === 3 ? "%" : ""}
-                      </>
-                    )}
-                  </>
-                )}
-              </CardContent>
-            </Card>
+              description={item.desc}
+              title={item.title}
+              itemSerialNo={idx}
+              statsNumber={item.statsNumber}
+              error={error}
+              isError={isError}
+              isLoading={isLoading}
+            />
           ))}
         </div>
       </div>

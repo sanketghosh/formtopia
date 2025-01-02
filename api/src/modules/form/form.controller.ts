@@ -341,6 +341,11 @@ export const singleFormStatsHandler = catchErrors(
         id: formId,
         userId: userId,
       },
+      select: {
+        title: true,
+        description: true,
+        shareURL: true,
+      },
     });
 
     // if form does not exist
@@ -349,6 +354,8 @@ export const singleFormStatsHandler = catchErrors(
         message: "ERROR! Form not found or you do not have access to it.",
       });
     }
+
+    const { title, description, shareURL } = form as Form;
 
     // Calculate stats for the specific form
     const stats = await db.form.aggregate({
@@ -377,11 +384,73 @@ export const singleFormStatsHandler = catchErrors(
       submissions,
       submissionRate,
       bounceRate,
+      title,
+      description,
+      shareURL,
     };
 
     res.status(OK).json({
       message: "SUCCESS! Stats for the form fetched successfully.",
       data: _data,
+    });
+  }
+);
+
+/**
+ *
+ */
+export const getFormByShareUrlHandler = catchErrors(
+  async (req: Request, res: Response): Promise<void | any> => {
+    // const userId = req.userId;
+    const { shareUrl } = req.params;
+
+    // Validate if shareUrl is provided
+    if (!shareUrl) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Share URL is required.",
+      });
+    }
+
+    // Find the form using the unique shareUrl
+    const form = await db.form.findUnique({
+      where: {
+        shareURL: shareUrl,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        content: true,
+        shareURL: true,
+      },
+    });
+
+    // If the form is not found
+    if (!form) {
+      return res.status(NOT_FOUND).json({
+        message: "ERROR! Form not found with the provided Share URL.",
+      });
+    }
+
+    // Increment the visitsCount by 1
+    await db.form.update({
+      where: { id: form.id },
+      data: {
+        visitsCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    // Respond with the form data
+    res.status(OK).json({
+      message: "SUCCESS! Form via shareURL fetched successfully.",
+      data: {
+        title: form.title,
+        description: form.description,
+        content: form.content,
+        shareUrl: form.shareURL,
+      },
     });
   }
 );

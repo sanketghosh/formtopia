@@ -74,3 +74,41 @@ export type FormElementsType = {
  *                                 *
  *                                 *
  **********************************/
+
+export type Submission = {
+  id: string;
+  submittedAt: Date;
+  city?: string;
+  country?: string;
+  browser?: string;
+  os?: string;
+  device?: string;
+};
+
+export type FormData = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  published: boolean;
+  title: string;
+  description: string;
+  content: string;
+  visitsCount: number;
+  submissionsCount: number;
+  shareURL: string;
+  formSubmissions: Submission[];
+};
+
+/***********************************
+ *                                 *
+ *                                 *
+ *                                 *
+ *                                 *
+ *                                 *
+ **********************************/
+
+export type StatsCardsType = {
+  title: string;
+  desc?: string;
+  statsNumber: number;
+};

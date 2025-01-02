@@ -93,3 +93,15 @@ export const singleFormStatsAction = async (formId: string) => {
   console.log(response.data);
   return response.data;
 };
+
+/**
+ *
+ * @returns
+ */
+export const fetchFormByShareUrlAction = async (shareUrl: string) => {
+  const response = await axiosApi.get(
+    `/api/v1/form/form-by-share-url/${shareUrl}`,
+  );
+  console.log(response.data);
+  return response.data;
+};

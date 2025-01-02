@@ -17,10 +17,9 @@ import {
   Settings,
   SingleFormData,
   Statistics,
+  SubmitForm,
 } from "@/pages";
 import { AuthRedirect, PrivateRoute } from "@/routes";
-import { useFormBuilderContext } from "./hooks/use-form-builder-context";
-import { useSingleFormData } from "./hooks/use-single-form-data";
 
 // routes
 const routes = createBrowserRouter([
@@ -94,6 +93,16 @@ const routes = createBrowserRouter([
     path: "*",
     element: <Error />,
   },
+  {
+    path: "/submit/:id",
+    element: (
+      <PrivateRoute>
+        <Suspense fallback={<PageLoader />}>
+          <SubmitForm />
+        </Suspense>
+      </PrivateRoute>
+    ),
+  },
 ]);
 
 export default function App() {
@@ -115,14 +124,3 @@ function PageLoader() {
     </div>
   );
 }
-
-/* function IsFormPublished({ children }: { children: React.ReactNode }) {
-  const { formData } = useSingleFormData();
-
-  if (formData?.published) {
-    return <div className="h-full w-full bg-background">form published</div>;
-  }
-
-  return children;
-}
- */

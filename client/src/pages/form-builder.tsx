@@ -40,9 +40,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
+import SharableLinkElement from "@/components/commons/sharable-link-element";
 
 export default function FormBuilder() {
-  const { setFormId, setFormData, formData, formId } = useSingleFormData();
+  const { setFormId, setFormData, formData, formId, setDataQueryingState } =
+    useSingleFormData();
   const { setElements } = useFormBuilderContext();
 
   const { id } = useParams<{ id?: string }>();
@@ -70,6 +72,11 @@ export default function FormBuilder() {
       // console.log("Fetched Data:", data); // Log fetched data
       setFormData(data.data);
       setFormId(id);
+      setDataQueryingState({
+        error: error,
+        isError: isError,
+        isLoading: isLoading,
+      });
     }
   }, [data, id, setFormData, setFormId]);
 
@@ -137,17 +144,7 @@ function IsFormPublished({
   shareURL?: string;
   formId: string;
 }) {
-  const [isCopied, setIsCopied] = useState(false);
   const { confetti, confettiOff, confettiOn } = useConfetti();
-
-  const fullUrlToShare = `http://${window.location.host}/submit/${shareURL}`;
-  const urlCopyHandler = async () => {
-    await copyToClipboard(fullUrlToShare);
-    setIsCopied(true);
-    setInterval(() => {
-      setIsCopied(false);
-    }, 2000);
-  };
 
   useEffect(() => {
     // confettiOn();
@@ -192,15 +189,8 @@ function IsFormPublished({
             </span>
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center gap-2">
-          <Input
-            value={fullUrlToShare}
-            readOnly
-            className="text-[13px] font-medium"
-          />
-          <Button size={"icon"} variant={"default"} onClick={urlCopyHandler}>
-            {isCopied ? <CircleCheckIcon /> : <CopyIcon />}
-          </Button>
+        <CardContent>
+          <SharableLinkElement sharableUrl={shareURL} />
         </CardContent>
         <CardFooter className="flex flex-col text-sm font-medium leading-tight text-muted-foreground">
           {/*  <Button className="w-full" onClick={handleNativeShare}>
