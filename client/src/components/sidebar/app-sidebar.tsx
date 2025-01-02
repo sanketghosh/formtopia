@@ -17,10 +17,17 @@ import {
 import NavMain from "@/components/nav/nav-main";
 import NavProjects from "@/components/nav/nav-projects";
 import NavUser from "@/components/nav/nav-user";
+import { useSingleFormData } from "@/hooks/use-single-form-data";
 
 // This is sample data.
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { formData } = useSingleFormData();
+
+  if (formData?.published) {
+    return null;
+  }
+
   return (
     <Sidebar collapsible="icon" {...props} variant="sidebar">
       <SidebarHeader className="">

@@ -35,9 +35,11 @@ export const useSingleFormData = create<FormStoreType>((set) => ({
   formId: null,
   formData: null,
   setFormId: (formId) => {
-    console.log("setting form id", formId), set({ formId });
+    // console.log("setting form id", formId),
+    set({ formId });
   },
   setFormData: (formData) => {
-    console.log("setting form data", formData), set({ formData });
+    // console.log("setting form data", formData),
+    set({ formData });
   },
 }));

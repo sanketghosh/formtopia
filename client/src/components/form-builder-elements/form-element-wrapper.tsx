@@ -47,7 +47,7 @@ export default function FormElementWrapper({
 
   if (draggable.isDragging) return null;
 
-  console.log("@@SELECTED ELE", selectedElement);
+  // console.log("@@SELECTED ELE", selectedElement);
 
   return (
     <div

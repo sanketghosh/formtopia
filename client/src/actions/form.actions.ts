@@ -59,14 +59,25 @@ export const updateFormAction = async ({
   formContent,
   formId,
 }: UpdateFormActionType) => {
-  console.log({
+  /* console.log({
     formContent,
     formId,
-  });
+  }); */
 
   const response = await axiosApi.put(`/api/v1/form/update-form/${formId}`, {
     formContent,
   });
+  console.log(response.data);
+  return response.data;
+};
+
+/**
+ *
+ * @param formId
+ * @returns
+ */
+export const publishFormAction = async (formId?: string) => {
+  const response = await axiosApi.post(`/api/v1/form/publish-form/${formId}`);
   console.log(response.data);
   return response.data;
 };

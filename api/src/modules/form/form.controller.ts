@@ -270,3 +270,52 @@ export const updateFormHandler = catchErrors(
     });
   }
 );
+
+/**
+ *
+ */
+
+export const publishFormHandler = catchErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    // If unauthorized
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "ERROR! Unauthorized. Cannot fulfill your request.",
+      });
+    }
+    // Fetch the form to ensure it exists and belongs to the user
+    const existingForm = await db.form.findFirst({
+      where: {
+        id: formId,
+        userId: userId,
+      },
+    });
+
+    if (!existingForm) {
+      res.status(NOT_FOUND).json({
+        message: "ERROR! Form not found or you do not have access to it.",
+      });
+    }
+
+    // Publish the form
+    const publishedForm = await db.form.update({
+      where: { id: formId },
+      data: { published: true },
+    });
+
+    // if form not publish due to an error
+    if (!publishedForm) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Failed to publish the form.",
+      });
+    }
+
+    res.status(OK).json({
+      message: "SUCCESS! Form published successfully.",
+      data: publishedForm,
+    });
+  }
+);

@@ -1,4 +1,6 @@
 // packages
+import { CircleCheckIcon, CopyIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import {
@@ -8,9 +10,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import Confetti from "react-confetti";
 
 // local modules
 import { fetchSingleFormAction } from "@/actions/form.actions";
+import { copyToClipboard } from "@/utils/copy-to-clipboard";
+import { useSingleFormData } from "@/hooks/use-single-form-data";
+import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 
 // components
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,16 +24,33 @@ import FormBuilderNav from "@/components/form-builder-elements/form-builder-nav"
 import FormBuilderSidebar from "@/components/form-builder-elements/form-builder-sidebar";
 import DragOverlayWrapper from "@/components/form-builder-elements/drag-overlay-wrapper";
 import FormBuilderPad from "@/components/form-builder-elements/form-builder-pad";
-import { useSingleFormData } from "@/hooks/use-single-form-data";
-import { useEffect } from "react";
-import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useConfetti } from "@/hooks/use-confetti";
 
 export default function FormBuilder() {
-  const { setFormId, setFormData, formId, formData } = useSingleFormData();
+  const { setFormId, setFormData, formData } = useSingleFormData();
   const { setElements } = useFormBuilderContext();
 
   const { id } = useParams<{ id?: string }>();
-  console.log(id);
+  // console.log(id);
+
+  useEffect(() => {
+    try {
+      const elements = JSON.parse(formData?.content!);
+      setElements(elements);
+    } catch (error) {
+      console.error("Failed to parse JSON:", error);
+    }
+  }, [formData, setElements]);
 
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ["fetch-single-form"],
@@ -60,12 +83,9 @@ export default function FormBuilder() {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  // console.log("@@@form builder", data.data.content);
-
-  useEffect(() => {
-    const elements = JSON.parse(formData?.content!);
-    setElements(elements);
-  }, [formData, setElements]);
+  if (formData?.published) {
+    return <IsFormPublished shareURL={formData?.shareURL} />;
+  }
 
   return (
     <DndContext sensors={sensors}>
@@ -94,9 +114,77 @@ export default function FormBuilder() {
             </>
           )}
         </div>
-        <FormBuilderSidebar published={data?.data.published} />
+        <FormBuilderSidebar />
       </div>
       <DragOverlayWrapper />
     </DndContext>
+  );
+}
+
+function IsFormPublished({ shareURL }: { shareURL?: string }) {
+  const [isCopied, setIsCopied] = useState(false);
+  const { confetti, confettiOff, confettiOn } = useConfetti();
+
+  const fullUrlToShare = `http://${window.location.host}/submit/${shareURL}`;
+  const urlCopyHandler = async () => {
+    await copyToClipboard(fullUrlToShare);
+    setIsCopied(true);
+    setInterval(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    // confettiOn();
+    setInterval(() => {
+      confettiOff();
+    }, 6000);
+  }, [confettiOff]);
+
+  /*   const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Form Link",
+          text: "Check out this form!",
+          url: fullUrlToShare,
+        });
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else {
+      alert("Sharing is not supported on this browser.");
+    }
+  }; */
+
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-sidebar p-4">
+      {confetti && <Confetti className="h-full w-full" />}
+      <Card className="lg:w-[500px]">
+        <CardHeader>
+          <CardTitle className="text-xl">Form Published</CardTitle>
+          <CardDescription>
+            Your form has been published, you cannot edit the form anymore.{" "}
+            <br /> Users can access the form through the link given below.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center gap-2">
+          <Input
+            value={fullUrlToShare}
+            readOnly
+            className="text-[13px] font-medium"
+          />
+          <Button size={"icon"} variant={"default"} onClick={urlCopyHandler}>
+            {isCopied ? <CircleCheckIcon /> : <CopyIcon />}
+          </Button>
+        </CardContent>
+        <CardFooter className="text-sm font-medium leading-tight">
+          {/*  <Button className="w-full" onClick={handleNativeShare}>
+            Share Form
+          </Button> */}
+          Share this link with user so that they can fill and submit the form.
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
