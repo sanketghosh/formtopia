@@ -22,11 +22,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
+import { useState } from "react";
 
 export default function PublishFormAlert() {
-  const { formId } = useSingleFormData();
+  const { formId, formData } = useSingleFormData();
+  // const [isPublishContentLengthZero, setIsPublishContentLengthZero] =
+  //   useState(false);
+
+  const { elements } = useFormBuilderContext();
   const navigate = useNavigate();
   const { confettiOn } = useConfetti();
+
+  // console.log(formData?.content.length);
 
   const mutation = useMutation({
     mutationFn: publishFormAction,
@@ -35,21 +43,35 @@ export default function PublishFormAlert() {
       confettiOn();
       setInterval(() => {
         navigate(0);
-      }, 2000);
+      }, 1200);
     },
     onError: (data) => {
       toast.error(data.message);
     },
   });
 
+  const contentArray = JSON.parse(formData?.content!);
   function publishFormHandler() {
-    mutation.mutate(formId!);
+    if (elements.length === 0) {
+      toast.error("Sorry you must add at least one element to publish form.");
+    } else if (Array.isArray(contentArray) && contentArray.length === 0) {
+      toast.error(
+        "Sorry, you must add at least one element to publish the form.",
+      );
+    } else {
+      mutation.mutate(formId!);
+    }
   }
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="w-full" variant={"default"} size={"sm"}>
+        <Button
+          className="w-full"
+          variant={"default"}
+          size={"sm"}
+          disabled={contentArray.length === 0}
+        >
           <Globe2Icon />
           Public
         </Button>

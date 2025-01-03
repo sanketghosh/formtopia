@@ -1,16 +1,13 @@
-import {
-  fetchFormByShareUrlAction,
-  fetchSingleFormAction,
-} from "@/actions/form.actions";
+import { fetchFormByShareUrlAction } from "@/actions/form.actions";
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
 import SingleElementBaseStyle from "@/components/form-builder-elements/single-element-base-style";
 import { Button } from "@/components/ui/button";
 import { FormElementInstance } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
+import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { string } from "zod";
 
 export default function SubmitForm() {
   const { id } = useParams<{ id?: string }>();
@@ -38,7 +35,7 @@ export default function SubmitForm() {
 
   return (
     <main className="flex h-full min-h-screen w-full items-center justify-center overflow-y-auto bg-sidebar/30 p-4 md:p-6 lg:p-8">
-      <div className="max-h-[650px] min-h-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg md:w-[600px]">
+      <div className="max-h-[650px] min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
         <FormSubmitComponent
           content={data?.data.content}
           shareUrl={data?.data.shareURL}
@@ -72,32 +69,50 @@ function FormSubmitComponent({
     toast.error("ERROR! Failed to parse, check console for details");
   }
 
+  const formValues = useRef<{ [key: string]: string }>({});
+
+  const submitValue = (key: string, value: string) => {
+    formValues.current[key] = value;
+  };
+
+  const mutation = useMutation({});
+
+  function formSubmitHandler(e: React.FormEvent) {
+    e.preventDefault();
+    console.log(formValues.current);
+  }
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-lg font-semibold md:text-xl">{title}</h2>
         <p className="text-sm font-medium text-muted-foreground">
           {description}
         </p>
       </div>
-      <div className="space-y-3">
-        {parsedContent.map((element) => {
-          const FormElement = FormElements[element.type]?.formComponent;
+      <form onSubmit={formSubmitHandler}>
+        <div className="space-y-3">
+          {parsedContent.map((element) => {
+            const FormElement = FormElements[element.type]?.formComponent;
 
-          if (!FormElement) {
-            console.warn(`No form component found for type: ${element.type}`);
-            toast.error(`No form component found for type: ${element.type}`);
-            return null;
-          }
+            if (!FormElement) {
+              console.warn(`No form component found for type: ${element.type}`);
+              toast.error(`No form component found for type: ${element.type}`);
+              return null;
+            }
 
-          return (
-            <SingleElementBaseStyle>
-              <FormElement key={element.id} elementInstance={element} />
-            </SingleElementBaseStyle>
-          );
-        })}
-      </div>
-      <Button className="w-full">Submit</Button>
+            return (
+              <SingleElementBaseStyle key={element.id}>
+                <FormElement
+                  elementInstance={element}
+                  submitValue={submitValue}
+                />
+              </SingleElementBaseStyle>
+            );
+          })}
+        </div>
+        <Button className="mt-4 w-full">Submit</Button>
+      </form>
     </div>
   );
 }

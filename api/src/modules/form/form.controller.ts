@@ -1,4 +1,10 @@
-import { BAD_REQUEST, NOT_FOUND, OK, UNAUTHORIZED } from "@/constants";
+import {
+  BAD_REQUEST,
+  NOT_FOUND,
+  OK,
+  UNAUTHORIZED,
+  UNPROCESSABLE_CONTENT,
+} from "@/constants";
 import { db } from "@/lib/prisma";
 import { catchErrors } from "@/utils/catch-errors";
 import type { NextFunction, Request, Response } from "express";
@@ -292,11 +298,24 @@ export const publishFormHandler = catchErrors(
         id: formId,
         userId: userId,
       },
+      select: {
+        content: true,
+      },
     });
 
     if (!existingForm) {
       res.status(NOT_FOUND).json({
         message: "ERROR! Form not found or you do not have access to it.",
+      });
+    }
+
+    // check if existing form content is empty
+    if (
+      !existingForm?.content ||
+      JSON.parse(existingForm.content).length === 0
+    ) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Form content cannot be empty.",
       });
     }
 

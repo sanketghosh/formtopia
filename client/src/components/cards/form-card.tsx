@@ -61,36 +61,39 @@ export default function FormCard({
         </div>
 
         <p className="text-sm font-medium text-muted-foreground">
-          Last updated on {formattedDate}
+          {published ? "Published" : "Last updated"} on {formattedDate}
         </p>
       </CardContent>
       <CardFooter className="flex w-full items-center justify-end gap-3 lg:justify-between">
-        <Link
-          to={`/create-form/${id}`}
-          className={cn(
-            buttonVariants({
-              variant: "default",
-              size: "sm",
-            }),
-            "w-full",
-          )}
-        >
-          <PenIcon size={17} />
-          <p className="hidden lg:block">Edit Form</p>
-        </Link>
-        <Link
-          to={`/single-form-data/${id}`}
-          className={cn(
-            buttonVariants({
-              variant: "ghost",
-              size: "sm",
-            }),
-            "w-full",
-          )}
-        >
-          <EyeIcon size={17} />
-          <p className="hidden lg:block">Form Data</p>
-        </Link>
+        {!published ? (
+          <Link
+            to={`/create-form/${id}`}
+            className={cn(
+              buttonVariants({
+                variant: "default",
+                size: "sm",
+              }),
+              "w-full",
+            )}
+          >
+            <PenIcon size={17} />
+            <p>Edit Form</p>
+          </Link>
+        ) : (
+          <Link
+            to={`/single-form-data/${id}`}
+            className={cn(
+              buttonVariants({
+                variant: "default",
+                size: "sm",
+              }),
+              "w-full",
+            )}
+          >
+            <EyeIcon size={17} />
+            <p>Form Data</p>
+          </Link>
+        )}
       </CardFooter>
     </Card>
   );

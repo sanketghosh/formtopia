@@ -3,11 +3,16 @@ import { LetterText } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // local modules
 import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
-import { ElementsType, FormElement, FormElementInstance } from "@/types";
+import {
+  ElementsType,
+  FormElement,
+  FormElementInstance,
+  SubmitFunction,
+} from "@/types";
 
 // components
 import { Label } from "@/components/ui/label";
@@ -236,11 +241,18 @@ function FormElementComponent({
 
 function FormComponent({
   elementInstance,
+  submitValue,
 }: {
   elementInstance: FormElementInstance;
+  submitValue?: SubmitFunction;
 }) {
+  const [value, setValue] = useState("");
   const element = elementInstance as CustomInstance;
   const { required, helperText, label, placeHolder } = element.extraAttributes;
+
+  /* function onChangeValueHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    setValue(e.target.value);
+  } */
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -248,7 +260,15 @@ function FormComponent({
         {label}
         {required && "*"}
       </Label>
-      <Input placeholder={placeHolder} />
+      <Input
+        placeholder={placeHolder}
+        onChange={(e) => setValue(e.target.value)}
+        value={value}
+        onBlur={(e) => {
+          if (!submitValue) return;
+          submitValue(element.id, e.target.value);
+        }}
+      />
       {helperText && (
         <p className="text-sm capitalize text-muted-foreground">{helperText}</p>
       )}

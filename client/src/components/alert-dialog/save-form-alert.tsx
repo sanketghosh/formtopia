@@ -1,7 +1,7 @@
 // packages
 import { Loader2Icon, SaveIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // local modules
 import { useSingleFormData } from "@/hooks/use-single-form-data";
@@ -25,11 +25,15 @@ import { Button } from "@/components/ui/button";
 export default function SaveFormAlert() {
   const { formId } = useSingleFormData();
   const { elements } = useFormBuilderContext();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: updateFormAction,
     onSuccess: async (data) => {
       toast.success(data.message);
+      queryClient.invalidateQueries({
+        queryKey: ["fetch-single-form"],
+      });
     },
     onError: (data) => {
       toast.error(data.message);
@@ -38,11 +42,16 @@ export default function SaveFormAlert() {
 
   const saveFormHandler = () => {
     // e.preventDefault();
-    const FormJSONData = JSON.stringify(elements);
-    mutation.mutate({
-      formId: formId!,
-      formContent: FormJSONData,
-    });
+
+    if (elements.length > 0) {
+      const FormJSONData = JSON.stringify(elements);
+      mutation.mutate({
+        formId: formId!,
+        formContent: FormJSONData,
+      });
+    } else {
+      toast.error("Sorry you must add at least one element to save form.");
+    }
   };
 
   return (

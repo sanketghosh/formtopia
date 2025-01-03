@@ -9,6 +9,7 @@ export type AuthenticatedType = {
 };
 
 export type SortOrderType = "latest" | "oldest";
+export type SortStatusType = "all" | "published" | "unpublished";
 
 export type FormCardType = {
   id: string;
@@ -35,6 +36,7 @@ export type FormCardType = {
  */
 
 export type ElementsType = "TextField";
+export type SubmitFunction = (key: string, value: string) => void;
 
 export type FormElement = {
   type: ElementsType;
@@ -51,6 +53,7 @@ export type FormElement = {
   }>;
   formComponent: React.FC<{
     elementInstance: FormElementInstance;
+    submitValue?: (key: string, value: string) => void;
   }>;
   propertiesComponent: React.FC<{
     elementInstance: FormElementInstance;
