@@ -63,6 +63,16 @@ export const TextFieldFormElement: FormElement = {
   formElementComponent: FormElementComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
+  validate: (
+    formElement: FormElementInstance,
+    currentValue: string,
+  ): boolean => {
+    const element = formElement as CustomInstance;
+    if (element.extraAttributes.required) {
+      return currentValue.length > 0;
+    }
+    return true;
+  },
 };
 
 type CustomInstance = FormElementInstance & {
@@ -242,9 +252,11 @@ function FormElementComponent({
 function FormComponent({
   elementInstance,
   submitValue,
+  isInvalid,
 }: {
   elementInstance: FormElementInstance;
   submitValue?: SubmitFunction;
+  isInvalid?: boolean;
 }) {
   const [value, setValue] = useState("");
   const element = elementInstance as CustomInstance;

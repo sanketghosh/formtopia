@@ -1,22 +1,75 @@
 import { fetchFormByShareUrlAction } from "@/actions/form.actions";
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
 import SingleElementBaseStyle from "@/components/form-builder-elements/single-element-base-style";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { FormElementInstance } from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader2Icon } from "lucide-react";
-import { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function SubmitForm() {
   const { id } = useParams<{ id?: string }>();
+  const navigate = useNavigate();
 
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ["fetch-single-form-content", id],
     queryFn: () => fetchFormByShareUrlAction(id!),
     staleTime: 5000,
   });
+
+  if (data?.data.published === false) {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-4">
+        <Card className="w-96">
+          <CardHeader>
+            <CardTitle>Oops! Form is not published yet.</CardTitle>
+            <CardDescription>
+              You need to publish your form after saving to view it here and
+              submit.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex items-center gap-3">
+            <Link
+              to={"/dashboard"}
+              className={cn(
+                "w-full",
+                buttonVariants({
+                  variant: "secondary",
+                  size: "sm",
+                }),
+              )}
+            >
+              <ArrowLeftIcon />
+              Go Back To Dashboard
+            </Link>
+            <Link
+              to={`/create-form/${data?.data.formId}`}
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                  size: "sm",
+                }),
+                "w-full",
+              )}
+            >
+              Go To Editor
+              <ArrowRightIcon />
+            </Link>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
 
   if (isError) {
     return <h2>{error.message}</h2>;

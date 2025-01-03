@@ -364,6 +364,7 @@ export const singleFormStatsHandler = catchErrors(
         title: true,
         description: true,
         shareURL: true,
+        published: true,
       },
     });
 
@@ -374,7 +375,7 @@ export const singleFormStatsHandler = catchErrors(
       });
     }
 
-    const { title, description, shareURL } = form as Form;
+    const { title, description, shareURL, published } = form as Form;
 
     // Calculate stats for the specific form
     const stats = await db.form.aggregate({
@@ -406,6 +407,7 @@ export const singleFormStatsHandler = catchErrors(
       title,
       description,
       shareURL,
+      published,
     };
 
     res.status(OK).json({
@@ -441,6 +443,7 @@ export const getFormByShareUrlHandler = catchErrors(
         description: true,
         content: true,
         shareURL: true,
+        published: true,
       },
     });
 
@@ -469,7 +472,25 @@ export const getFormByShareUrlHandler = catchErrors(
         description: form.description,
         content: form.content,
         shareUrl: form.shareURL,
+        published: form.published,
+        formId: form.id,
       },
     });
+  }
+);
+
+/**
+ *
+ *
+ *
+ */
+export const deleteFormHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const userId = req.userId;
+    const { formId } = req.params;
   }
 );

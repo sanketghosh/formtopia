@@ -1,12 +1,16 @@
 // packages
 import {
   AppWindowIcon,
+  ArchiveIcon,
   BellIcon,
   ChartPieIcon,
   LibraryIcon,
   SettingsIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+
+// local modules
+import { cn } from "@/lib/utils";
 
 // components
 import {
@@ -16,7 +20,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 
 const MENU_LINKS = [
   {
@@ -33,6 +36,11 @@ const MENU_LINKS = [
     href: "/all-forms",
     text: "All Forms",
     icon: LibraryIcon,
+  },
+  {
+    href: "/trash",
+    text: "Trash",
+    icon: ArchiveIcon,
   },
   {
     href: "/notifications",
@@ -62,7 +70,7 @@ export default function NavMain() {
                 className={cn(
                   "hover:bg-sidebar-primary hover:text-sidebar-primary-foreground",
                   item.href === location.pathname &&
-                    "bg-sidebar-primary hover:bg-sidebar-primary/90",
+                    "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90",
                 )}
               >
                 {item.icon && <item.icon />}

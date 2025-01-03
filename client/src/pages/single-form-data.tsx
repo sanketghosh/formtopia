@@ -1,6 +1,10 @@
 // packages
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRightCircleIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  ArrowRightCircleIcon,
+  ArrowRightIcon,
+} from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 // local packages/modules
@@ -14,6 +18,13 @@ import SharableLinkElement from "@/components/commons/sharable-link-element";
 import FormSubmissionsTable from "@/components/table/form-submissions-table";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function SingleFormData() {
   const { id } = useParams<{ id?: string }>();
@@ -49,7 +60,50 @@ export default function SingleFormData() {
     },
   ];
 
-  console.log(data);
+  // console.log(data);
+  if (data?.data.published === false) {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-4">
+        <Card className="w-96">
+          <CardHeader>
+            <CardTitle>Oops! Form is not published yet.</CardTitle>
+            <CardDescription>
+              You need to publish your form after saving to view it here and
+              submit.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex items-center gap-3">
+            <Link
+              to={"/dashboard"}
+              className={cn(
+                "w-full",
+                buttonVariants({
+                  variant: "secondary",
+                  size: "sm",
+                }),
+              )}
+            >
+              <ArrowLeftIcon />
+              Go Back To Dashboard
+            </Link>
+            <Link
+              to={`/create-form/${data?.data.formId}`}
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                  size: "sm",
+                }),
+                "w-full",
+              )}
+            >
+              Go To Editor
+              <ArrowRightIcon />
+            </Link>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
 
   return (
     <div className="space-y-6">

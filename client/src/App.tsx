@@ -18,8 +18,10 @@ import {
   SingleFormData,
   Statistics,
   SubmitForm,
+  Trash,
 } from "@/pages";
 import { AuthRedirect, PrivateRoute } from "@/routes";
+import FormNotPublished from "./routes/form-not-published";
 
 // routes
 const routes = createBrowserRouter([
@@ -86,6 +88,10 @@ const routes = createBrowserRouter([
       {
         path: "/account",
         element: <Account />,
+      },
+      {
+        path: "/trash",
+        element: <Trash />,
       },
     ],
   },

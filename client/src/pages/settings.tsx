@@ -1,3 +1,9 @@
+import ThemeToggle from "@/components/buttons/theme-toggle";
+
 export default function Settings() {
-  return <div>Settings</div>;
+  return (
+    <div>
+      <ThemeToggle />
+    </div>
+  );
 }
