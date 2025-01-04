@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
 const type: ElementsType = "TextField";
 
@@ -63,6 +64,7 @@ export const TextFieldFormElement: FormElement = {
   formElementComponent: FormElementComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
+
   validate: (
     formElement: FormElementInstance,
     currentValue: string,
@@ -253,14 +255,21 @@ function FormComponent({
   elementInstance,
   submitValue,
   isInvalid,
+  defaultValue,
 }: {
   elementInstance: FormElementInstance;
   submitValue?: SubmitFunction;
   isInvalid?: boolean;
+  defaultValue?: string;
 }) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultValue || "");
   const element = elementInstance as CustomInstance;
   const { required, helperText, label, placeHolder } = element.extraAttributes;
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setError(isInvalid === true);
+  }, [isInvalid]);
 
   /* function onChangeValueHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
@@ -268,7 +277,7 @@ function FormComponent({
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <Label>
+      <Label className={cn(error && "text-destructive")}>
         {label}
         {required && "*"}
       </Label>
@@ -278,11 +287,24 @@ function FormComponent({
         value={value}
         onBlur={(e) => {
           if (!submitValue) return;
+
+          const valid = TextFieldFormElement.validate(element, e.target.value);
+          setError(!valid);
+          if (!valid) return;
+
           submitValue(element.id, e.target.value);
         }}
+        className={cn(error && "ring-destructive")}
       />
       {helperText && (
-        <p className="text-sm capitalize text-muted-foreground">{helperText}</p>
+        <p
+          className={cn(
+            "text-sm capitalize text-muted-foreground",
+            error && "text-destructive",
+          )}
+        >
+          {helperText}
+        </p>
       )}
     </div>
   );

@@ -40,6 +40,11 @@ app.use(
 );
 app.use(morgan("combined"));
 
+app.get("/get-ip", (req, res) => {
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  res.json({ ip });
+});
+
 // routes
 app.use("/api/v1", healthCheck);
 app.use("/api/v1", authRoutes);

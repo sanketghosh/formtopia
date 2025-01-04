@@ -1,4 +1,8 @@
-import { fetchFormByShareUrlAction } from "@/actions/form.actions";
+import {
+  fetchFormByShareUrlAction,
+  formStatsAction,
+  submitFormAction,
+} from "@/actions/form.actions";
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
 import SingleElementBaseStyle from "@/components/form-builder-elements/single-element-base-style";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -13,9 +17,12 @@ import { cn } from "@/lib/utils";
 import { FormElementInstance } from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { boolean } from "zod";
+import { v4 as uuidGenerator } from "uuid";
+import { UAParser } from "ua-parser-js";
 
 export default function SubmitForm() {
   const { id } = useParams<{ id?: string }>();
@@ -26,6 +33,8 @@ export default function SubmitForm() {
     queryFn: () => fetchFormByShareUrlAction(id!),
     staleTime: 5000,
   });
+
+  console.log("@@@SUBMIT FORM", data?.data);
 
   if (data?.data.published === false) {
     return (
@@ -91,7 +100,7 @@ export default function SubmitForm() {
       <div className="max-h-[650px] min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
         <FormSubmitComponent
           content={data?.data.content}
-          shareUrl={data?.data.shareURL}
+          shareUrl={data?.data.shareUrl}
           description={data?.data.description}
           title={data?.data.title}
         />
@@ -123,20 +132,69 @@ function FormSubmitComponent({
   }
 
   const formValues = useRef<{ [key: string]: string }>({});
+  const formErrors = useRef<{ [key: string]: boolean }>({});
+
+  const { browser, device, os } = UAParser();
+
+  // for re-rendering as re-rendering is off for using useRef
+  const [renderKey, setRenderKey] = useState<string>(uuidGenerator());
+
+  type ValidateFormFuncType = () => boolean;
+
+  const validateForm: ValidateFormFuncType = useCallback(() => {
+    for (const field of parsedContent) {
+      const actualValue = formValues.current[field.id] || "";
+      const valid = FormElements[field.type].validate(field, actualValue);
+
+      if (!valid) {
+        formErrors.current[field.id] = true;
+      }
+
+      if (Object.keys(formErrors.current).length > 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }, [parsedContent]);
 
   const submitValue = (key: string, value: string) => {
     formValues.current[key] = value;
   };
 
-  const mutation = useMutation({});
+  const mutation = useMutation({
+    mutationFn: submitFormAction,
+    onSuccess: async (data) => {
+      toast.success(data.message);
+    },
+    onError: (data: Error) => {
+      toast.error(data.message);
+    },
+  });
 
   function formSubmitHandler(e: React.FormEvent) {
     e.preventDefault();
-    console.log(formValues.current);
+
+    formErrors.current = {};
+    const validForm = validateForm();
+    if (!validForm) {
+      setRenderKey(uuidGenerator());
+      toast.error("Please check the errors and try again.");
+      return;
+    }
+
+    const JSONContent = JSON.stringify(formValues.current);
+    mutation.mutate({
+      shareURL: shareUrl,
+      browser: browser.name,
+      content: JSONContent,
+      device: device.type,
+      os: os.name,
+    });
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" key={renderKey}>
       <div>
         <h2 className="text-lg font-semibold md:text-xl">{title}</h2>
         <p className="text-sm font-medium text-muted-foreground">
@@ -159,6 +217,8 @@ function FormSubmitComponent({
                 <FormElement
                   elementInstance={element}
                   submitValue={submitValue}
+                  isInvalid={formErrors.current[element.id]}
+                  defaultValue={formValues.current[element.id]}
                 />
               </SingleElementBaseStyle>
             );

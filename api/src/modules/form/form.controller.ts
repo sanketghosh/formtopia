@@ -1,5 +1,6 @@
 import {
   BAD_REQUEST,
+  CREATED,
   NOT_FOUND,
   OK,
   UNAUTHORIZED,
@@ -492,5 +493,88 @@ export const deleteFormHandler = catchErrors(
   ): Promise<void | any> => {
     const userId = req.userId;
     const { formId } = req.params;
+  }
+);
+
+/***
+ *
+ *
+ *
+ *
+ */
+
+export const formSubmitHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+    const userId = req.userId;
+    const { shareUrl } = req.params;
+    const { content, browser, os, device } = req.body;
+
+    const location = await fetch(`http://ip-api.com/json`);
+    const { city, country } = await location.json();
+
+    // if user is not authorized
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "User is not authorized.",
+      });
+    }
+
+    // validate if content is available
+    if (!content) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Content is required to submit the form.",
+      });
+    }
+
+    // Find the form using the shareUrl
+    const form = await db.form.findUnique({
+      where: {
+        shareURL: shareUrl,
+      },
+    });
+
+    if (!form) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Form not found.",
+      });
+    }
+
+    // Save the form submission
+    const submission = await db.formSubmission.create({
+      data: {
+        formId: form.id,
+        content: content,
+        city: city || null,
+        country: country || null,
+        browser: browser || null,
+        os: os || null,
+        device: device || null,
+      },
+    });
+
+    if (!submission) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Failed to submit the form.",
+      });
+    }
+
+    // Increment the form's submission count
+    await db.form.update({
+      where: { id: form.id },
+      data: {
+        submissionsCount: { increment: 1 },
+      },
+    });
+
+    res.status(CREATED).json({
+      message: "SUCCESS! Form submitted successfully.",
+      data: submission,
+    });
   }
 );

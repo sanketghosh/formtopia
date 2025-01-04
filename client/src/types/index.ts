@@ -55,6 +55,7 @@ export type FormElement = {
     elementInstance: FormElementInstance;
     submitValue?: (key: string, value: string) => void;
     isInvalid?: boolean;
+    defaultValue?: string;
   }>;
   propertiesComponent: React.FC<{
     elementInstance: FormElementInstance;

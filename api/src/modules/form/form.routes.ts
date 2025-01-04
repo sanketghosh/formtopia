@@ -8,6 +8,7 @@ import {
   fetchSingleFormHandler,
   formCreateHandler,
   formStatsHandler,
+  formSubmitHandler,
   getFormByShareUrlHandler,
   publishFormHandler,
   singleFormStatsHandler,
@@ -35,5 +36,6 @@ router.get(
   singleFormStatsHandler
 );
 router.get("/form/form-by-share-url/:shareUrl", getFormByShareUrlHandler);
+router.post("/form/submit/:shareUrl", verifyToken, formSubmitHandler);
 
 export default router;
