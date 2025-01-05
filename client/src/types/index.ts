@@ -118,4 +118,16 @@ export type StatsCardsType = {
   title: string;
   desc?: string;
   statsNumber: number;
+  isPercentage: boolean;
+};
+
+export type SubmissionType = {
+  browser?: string | null;
+  city?: string | null;
+  content: string;
+  id: string;
+  country?: string | null;
+  submittedAt: string;
+  device: string | null;
+  os: string | null;
 };

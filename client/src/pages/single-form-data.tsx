@@ -42,21 +42,25 @@ export default function SingleFormData() {
       title: "Forms visits",
       desc: "Number of the total of forms visits.",
       statsNumber: data?.data.visits,
+      isPercentage: false,
     },
     {
       title: "Submissions",
       desc: "Number of the total forms has been submitted.",
       statsNumber: data?.data.submissions,
+      isPercentage: false,
     },
     {
       title: "Response percentage",
       desc: "Percentage of response received.",
       statsNumber: data?.data.submissionRate,
+      isPercentage: true,
     },
     {
       title: "Bounce rate",
       desc: "Rate of forms have not been submitted.",
       statsNumber: data?.data.bounceRate,
+      isPercentage: true,
     },
   ];
 
@@ -143,6 +147,7 @@ export default function SingleFormData() {
             error={error}
             isError={isError}
             isLoading={isLoading}
+            isPercentage={item.isPercentage}
           />
         ))}
       </div>

@@ -1,5 +1,11 @@
 // packages
 import { EyeIcon, GlobeIcon, LockIcon, PenIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+
+// local modules
+import { FormCardType } from "@/types";
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/utils/format-date";
 
 // components
 import {
@@ -10,11 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { formatDate } from "@/utils/format-date";
-import { FormCardType } from "@/types";
-import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { buttonVariants } from "@/components/ui/button";
 
 type FormCardProps = {
   data: FormCardType;
@@ -37,7 +39,7 @@ export default function FormCard({
     <Card className="relative">
       <CardHeader>
         <CardTitle className="truncate">{title}</CardTitle>
-        <CardDescription className="line-clamp-2">
+        <CardDescription className="line-clamp-1">
           {description}
         </CardDescription>
       </CardHeader>

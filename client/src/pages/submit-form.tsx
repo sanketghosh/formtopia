@@ -1,8 +1,22 @@
+// packages
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { v4 as uuidGenerator } from "uuid";
+import { UAParser } from "ua-parser-js";
+import Confetti from "react-confetti";
+
+// local modules
+import { cn } from "@/lib/utils";
+import { FormElementInstance } from "@/types";
 import {
   fetchFormByShareUrlAction,
-  formStatsAction,
   submitFormAction,
 } from "@/actions/form.actions";
+
+// components
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
 import SingleElementBaseStyle from "@/components/form-builder-elements/single-element-base-style";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -13,16 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { FormElementInstance } from "@/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import { boolean } from "zod";
-import { v4 as uuidGenerator } from "uuid";
-import { UAParser } from "ua-parser-js";
+import { Separator } from "@/components/ui/separator";
 
 export default function SubmitForm() {
   const { id } = useParams<{ id?: string }>();
@@ -34,7 +39,7 @@ export default function SubmitForm() {
     staleTime: 5000,
   });
 
-  console.log("@@@SUBMIT FORM", data?.data);
+  // console.log("@@@SUBMIT FORM", data?.data);
 
   if (data?.data.published === false) {
     return (
@@ -97,12 +102,21 @@ export default function SubmitForm() {
 
   return (
     <main className="flex h-full min-h-screen w-full items-center justify-center overflow-y-auto bg-sidebar/30 p-4 md:p-6 lg:p-8">
-      <div className="max-h-[650px] min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
+      <div className="container max-h-[650px] min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
+        <div>
+          <h2 className="text-lg font-semibold md:text-xl">
+            {data?.data.title}
+          </h2>
+          <p className="text-sm font-medium text-muted-foreground">
+            {data?.data.description}
+          </p>
+        </div>
+        <Separator />
         <FormSubmitComponent
           content={data?.data.content}
           shareUrl={data?.data.shareUrl}
-          description={data?.data.description}
-          title={data?.data.title}
+          // description={data?.data.description}
+          // title={data?.data.title}
         />
       </div>
     </main>
@@ -112,8 +126,8 @@ export default function SubmitForm() {
 type FormSubmitComponentProps = {
   shareUrl: string;
   content: string;
-  description: string;
-  title: string;
+  description?: string;
+  title?: string;
 };
 
 function FormSubmitComponent({
@@ -123,6 +137,7 @@ function FormSubmitComponent({
   title,
 }: FormSubmitComponentProps) {
   let parsedContent: FormElementInstance[] = [];
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   try {
     parsedContent = JSON.parse(content);
@@ -166,6 +181,7 @@ function FormSubmitComponent({
     mutationFn: submitFormAction,
     onSuccess: async (data) => {
       toast.success(data.message);
+      setFormSubmitted(true);
     },
     onError: (data: Error) => {
       toast.error(data.message);
@@ -193,14 +209,22 @@ function FormSubmitComponent({
     });
   }
 
+  if (formSubmitted) {
+    return (
+      <div>
+        <Confetti
+          recycle={false}
+          className="h-full w-full"
+          numberOfPieces={1000}
+        />
+        <h2 className="text-2xl font-semibold">Form submitted!</h2>
+        <p>Thank you for submitting your form you can close this page now.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6" key={renderKey}>
-      <div>
-        <h2 className="text-lg font-semibold md:text-xl">{title}</h2>
-        <p className="text-sm font-medium text-muted-foreground">
-          {description}
-        </p>
-      </div>
       <form onSubmit={formSubmitHandler}>
         <div className="space-y-3">
           {parsedContent.map((element) => {

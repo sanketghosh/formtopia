@@ -536,6 +536,7 @@ export const formSubmitHandler = catchErrors(
     const form = await db.form.findUnique({
       where: {
         shareURL: shareUrl,
+        published: true,
       },
     });
 
@@ -578,3 +579,87 @@ export const formSubmitHandler = catchErrors(
     });
   }
 );
+
+/***
+ *
+ *
+ *
+ *
+ */
+
+/* export const getAllFormsOverallMetricsHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const userId = req.userId;
+
+    // Check if user exists
+    if (!userId) {
+      return res.status(UNAUTHORIZED).json({
+        message: "ERROR! Unauthorized. User not found.",
+      });
+    }
+
+    // Aggregate overall stats
+    const stats = await db.form.aggregate({
+      where: {
+        userId: userId,
+      },
+      _sum: {
+        visitsCount: true,
+        submissionsCount: true,
+      },
+    });
+
+    // Calculate visits, submissions, submission rate, and bounce rate
+    const visits = stats._sum.visitsCount || 0;
+    const submissions = stats._sum.submissionsCount || 0;
+
+    let submissionRate = 0;
+    if (visits > 0) {
+      submissionRate = (submissions / visits) * 100;
+    }
+    const bounceRate = 100 - submissionRate;
+
+    // Fetch all submissions and transform data
+    const allSubmissions = await db.formSubmission.findMany({
+      where: {
+        form: {
+          userId: userId,
+        },
+      },
+      select: {
+        submittedAt: true,
+      },
+    });
+
+    // Group submissions by month
+    const monthlyMetrics = allSubmissions.reduce((acc, submission) => {
+      const month = submission.submittedAt.toISOString().substring(0, 7); // Extract "YYYY-MM"
+      if (!acc[month]) {
+        acc[month] = { month, submissions: 0 };
+      }
+      acc[month].submissions += 1;
+      return acc;
+    }, {} as Record<string, { month: string; submissions: number }>);
+
+    const formattedMonthlyMetrics = Object.values(monthlyMetrics);
+
+    // Prepare response data
+    const _data = {
+      visits,
+      submissions,
+      submissionRate,
+      bounceRate,
+      monthlyMetrics: formattedMonthlyMetrics,
+    };
+
+    res.status(OK).json({
+      message: "SUCCESS! Stats fetched successfully.",
+      data: _data,
+    });
+  }
+);
+ */

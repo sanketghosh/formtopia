@@ -9,7 +9,7 @@ import { z } from "zod";
  */
 export const formStatsAction = async () => {
   const response = await axiosApi.get("/api/v1/form/get-form-stats");
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -22,7 +22,7 @@ export const createFormAction = async (
   formData: z.infer<typeof StartFormCreationSchema>,
 ) => {
   const response = await axiosApi.post("/api/v1/form/create-form", formData);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -35,7 +35,7 @@ export const fetchFormActions = async (sortOrder: SortOrderType) => {
   const response = await axiosApi.get(
     `/api/v1/form/fetch-forms?sort=${sortOrder}`,
   );
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -46,7 +46,7 @@ export const fetchFormActions = async (sortOrder: SortOrderType) => {
  */
 export const fetchSingleFormAction = async (formId: string) => {
   const response = await axiosApi.get(`/api/v1/form/single-form/${formId}`);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -67,7 +67,7 @@ export const updateFormAction = async ({
   const response = await axiosApi.put(`/api/v1/form/update-form/${formId}`, {
     formContent,
   });
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -78,7 +78,7 @@ export const updateFormAction = async ({
  */
 export const publishFormAction = async (formId?: string) => {
   const response = await axiosApi.post(`/api/v1/form/publish-form/${formId}`);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -90,7 +90,7 @@ export const singleFormStatsAction = async (formId: string) => {
   const response = await axiosApi.get(
     `/api/v1/form/get-single-form-stats/${formId}`,
   );
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -102,7 +102,7 @@ export const fetchFormByShareUrlAction = async (shareUrl: string) => {
   const response = await axiosApi.get(
     `/api/v1/form/form-by-share-url/${shareUrl}`,
   );
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -141,6 +141,21 @@ export const submitFormAction = async ({
     device,
     os,
   });
+  // console.log(response.data);
+  return response.data;
+};
+
+/***
+ *
+ *
+ *
+ */
+/**
+ *
+ * @returns
+ */
+export const fetchFormsOverallMetricsAction = async () => {
+  const response = await axiosApi.get("/api/v1/form/get-all-form-metrics");
   console.log(response.data);
   return response.data;
 };

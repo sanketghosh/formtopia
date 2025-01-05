@@ -37,5 +37,10 @@ router.get(
 );
 router.get("/form/form-by-share-url/:shareUrl", getFormByShareUrlHandler);
 router.post("/form/submit/:shareUrl", verifyToken, formSubmitHandler);
+/* router.get(
+  "/form/get-all-form-metrics",
+  verifyToken,
+  getAllFormsOverallMetricsHandler
+); */
 
 export default router;

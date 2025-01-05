@@ -14,7 +14,10 @@ import {
 
 // local modules
 import { useAuthContext } from "@/hooks/use-auth-context";
-import { formStatsAction } from "@/actions/form.actions";
+import {
+  fetchFormsOverallMetricsAction,
+  formStatsAction,
+} from "@/actions/form.actions";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -33,27 +36,38 @@ export default function Dashboard() {
     refetchOnWindowFocus: true,
   });
 
+  /*  const { data: _data } = useQuery({
+    queryKey: ["get-overall-form-metrics"],
+    queryFn: fetchFormsOverallMetricsAction,
+    staleTime: 5000,
+  });
+  console.log(_data?.data); */
+
   // stats cards
   const statsCards: StatsCardsType[] = [
     {
       title: "Forms visits",
       desc: "Number of the total of forms visits.",
       statsNumber: data?.data.visits,
+      isPercentage: false,
     },
     {
       title: "Submissions",
       desc: "Number of the total forms has been submitted.",
       statsNumber: data?.data.submissions,
+      isPercentage: false,
     },
     {
       title: "Response percentage",
       desc: "Percentage of response received.",
       statsNumber: data?.data.submissionRate,
+      isPercentage: true,
     },
     {
       title: "Bounce rate",
       desc: "Rate of forms have not been submitted.",
       statsNumber: data?.data.bounceRate,
+      isPercentage: true,
     },
   ];
 
@@ -103,6 +117,7 @@ export default function Dashboard() {
               error={error}
               isError={isError}
               isLoading={isLoading}
+              isPercentage={item.isPercentage}
             />
           ))}
         </div>

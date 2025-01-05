@@ -15,6 +15,7 @@ type StatsCardProps = {
   error?: Error | null;
   itemSerialNo: number;
   statsNumber: number;
+  isPercentage: boolean;
 };
 
 export default function StatsCard({
@@ -25,6 +26,7 @@ export default function StatsCard({
   isLoading,
   title,
   statsNumber,
+  isPercentage,
 }: StatsCardProps) {
   return (
     <Card className="cursor-pointer transition-all hover:bg-secondary/30">
@@ -41,8 +43,8 @@ export default function StatsCard({
               <Loader2Icon className="animate-spin text-muted-foreground" />
             ) : (
               <>
-                {statsNumber}
-                {itemSerialNo === 2 || itemSerialNo === 3 ? "%" : ""}
+                {!isPercentage ? statsNumber : statsNumber.toFixed(1)}
+                {isPercentage ? "%" : ""}
               </>
             )}
           </>

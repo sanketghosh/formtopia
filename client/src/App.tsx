@@ -102,11 +102,11 @@ const routes = createBrowserRouter([
   {
     path: "/submit/:id",
     element: (
-      <PrivateRoute>
-        <Suspense fallback={<PageLoader />}>
-          <SubmitForm />
-        </Suspense>
-      </PrivateRoute>
+      // <PrivateRoute>
+      <Suspense fallback={<PageLoader />}>
+        <SubmitForm />
+      </Suspense>
+      // </PrivateRoute>
     ),
   },
 ]);
