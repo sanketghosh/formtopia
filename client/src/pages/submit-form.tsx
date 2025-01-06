@@ -5,7 +5,6 @@ import { useCallback, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { v4 as uuidGenerator } from "uuid";
-import { UAParser } from "ua-parser-js";
 import Confetti from "react-confetti";
 
 // local modules
@@ -28,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getDeviceTypeFromUserAgent } from "@/utils/get-device-info";
 
 export default function SubmitForm() {
   const { id } = useParams<{ id?: string }>();
@@ -139,6 +139,9 @@ function FormSubmitComponent({
   let parsedContent: FormElementInstance[] = [];
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  const deviceType = getDeviceTypeFromUserAgent();
+  // console.log(deviceType);
+
   try {
     parsedContent = JSON.parse(content);
   } catch (error) {
@@ -148,8 +151,6 @@ function FormSubmitComponent({
 
   const formValues = useRef<{ [key: string]: string }>({});
   const formErrors = useRef<{ [key: string]: boolean }>({});
-
-  const { browser, device, os } = UAParser();
 
   // for re-rendering as re-rendering is off for using useRef
   const [renderKey, setRenderKey] = useState<string>(uuidGenerator());
@@ -202,10 +203,8 @@ function FormSubmitComponent({
     const JSONContent = JSON.stringify(formValues.current);
     mutation.mutate({
       shareURL: shareUrl,
-      browser: browser.name,
       content: JSONContent,
-      device: device.type,
-      os: os.name,
+      device: deviceType,
     });
   }
 

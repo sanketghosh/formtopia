@@ -1,6 +1,6 @@
 // packages
 import { useNavigate } from "react-router-dom";
-import { Globe2Icon, Loader2Icon, SaveIcon } from "lucide-react";
+import { Globe2Icon, Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 
@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { publishFormAction } from "@/actions/form.actions";
 import { useSingleFormData } from "@/hooks/use-single-form-data";
 import { useConfetti } from "@/hooks/use-confetti";
+import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 
 // components
 import {
@@ -22,8 +23,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
-import { useState } from "react";
 
 export default function PublishFormAlert() {
   const { formId, formData } = useSingleFormData();

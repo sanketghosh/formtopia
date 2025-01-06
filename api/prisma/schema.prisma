@@ -39,7 +39,7 @@ model Form {
   visitsCount      Int @default(0)
   submissionsCount Int @default(0)
 
-  shareURL String @default(uuid()) @unique
+  shareURL String @unique @default(uuid())
 
   formSubmissions FormSubmission[]
   user            User             @relation(fields: [userId], references: [id])
@@ -55,11 +55,10 @@ model FormSubmission {
 
   content String // Captured form data in JSON
 
-  city    String?
-  country String?
-  browser String?
-  os      String?
-  device  String?
+  city      String?
+  country   String?
+  continent String?
+  device    String?
 
   @@map("form_submissions")
 }

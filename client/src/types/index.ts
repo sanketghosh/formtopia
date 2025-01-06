@@ -1,4 +1,5 @@
 import React from "react";
+import { LucideIcon } from "lucide-react";
 
 export type AuthenticatedType = {
   id: string;
@@ -35,7 +36,16 @@ export type FormCardType = {
  * form builder and elements related to that
  */
 
-export type ElementsType = "TextField";
+export type ElementsType =
+  | "TextField"
+  | "TitleField"
+  | "SubtitleField"
+  | "ParagraphField"
+  | "SeparatorField"
+  | "SpacerField"
+  | "NumberField"
+  | "TextareaField"
+  | "DateField";
 export type SubmitFunction = (key: string, value: string) => void;
 
 export type FormElement = {
@@ -44,7 +54,7 @@ export type FormElement = {
   construct: (id: string) => FormElementInstance;
 
   designerButton: {
-    icon: React.ElementType;
+    icon: LucideIcon;
     label: string;
   };
 
@@ -67,7 +77,7 @@ export type FormElement = {
 export type FormElementInstance = {
   id: string;
   type: ElementsType;
-  extraAttributes: Record<string, any>;
+  extraAttributes?: Record<string, any>;
 };
 
 export type FormElementsType = {

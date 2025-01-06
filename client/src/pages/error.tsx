@@ -1,7 +1,10 @@
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+// packages
 import { FlagIcon, HomeIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+
+// local modules
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function Error() {
   return (

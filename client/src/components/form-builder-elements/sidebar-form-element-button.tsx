@@ -36,7 +36,7 @@ export default function SidebarFormElementButton({
       {...draggable.listeners}
       {...draggable.attributes}
     >
-      <Icon />
+      <Icon className="h-6 w-6" />
       <p className="text-xs">{label}</p>
     </Button>
   );
@@ -52,7 +52,7 @@ export function SidebarFormElementButtonDragOverlay({
       className={cn("flex size-20 cursor-grabbing flex-col")}
       variant={"outline"}
     >
-      <Icon className="h-8 w-8 cursor-grabbing" />
+      <Icon className="h-12 w-12 cursor-grabbing" />
       <p className="text-xs">{label}</p>
     </Button>
   );

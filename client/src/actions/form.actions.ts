@@ -115,31 +115,23 @@ export const fetchFormByShareUrlAction = async (shareUrl: string) => {
 type SubmitFormDataTypes = {
   shareURL: string;
   content?: string;
-  os?: string;
   device?: string;
-  browser?: string;
 };
 
 export const submitFormAction = async ({
-  browser,
   content,
   device,
-  os,
   shareURL,
 }: SubmitFormDataTypes) => {
   console.log({
-    browser,
     content,
     device,
-    os,
     shareURL,
   });
 
   const response = await axiosApi.post(`/api/v1/form/submit/${shareURL}`, {
     content,
-    browser,
     device,
-    os,
   });
   // console.log(response.data);
   return response.data;

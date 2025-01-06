@@ -80,7 +80,7 @@
     @apply border-border;
   }
   body {
-    @apply font-parkinsans bg-background text-foreground;
+    @apply bg-background font-parkinsans text-foreground;
   }
 }
 @layer base {
@@ -89,5 +89,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    ::-webkit-scrollbar {
+      @apply w-2 bg-secondary;
+    }
   }
 }

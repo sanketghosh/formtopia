@@ -54,7 +54,10 @@ export default function FormElementWrapper({
       ref={draggable.setNodeRef}
       {...draggable.listeners}
       {...draggable.attributes}
-      className="relative flex h-32 flex-col rounded-md text-foreground ring-1 ring-secondary hover:cursor-pointer"
+      className={cn(
+        "relative flex h-32 flex-col rounded-md text-foreground ring-1 ring-secondary hover:cursor-pointer",
+        FormElements[element.type].type === "TextareaField" && "h-fit",
+      )}
       onMouseEnter={() => {
         setMouseIsOver(true);
       }}
@@ -99,7 +102,11 @@ export default function FormElementWrapper({
         <div className="absolute top-0 h-2 w-full rounded-md rounded-b-none bg-sidebar-primary" />
       )}
       <SingleElementBaseStyle
-        className={cn(mouseIsOver && "opacity-25", "pointer-events-none")}
+        className={cn(
+          mouseIsOver && "opacity-25",
+          "pointer-events-none",
+          FormElements[element.type].type === "TextareaField" && "h-fit",
+        )}
       >
         <FormElement elementInstance={element} />
       </SingleElementBaseStyle>

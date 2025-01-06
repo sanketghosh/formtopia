@@ -44,9 +44,9 @@ export default function FormCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <span className="absolute right-4 top-4 text-muted-foreground">
-          {published ? <GlobeIcon size={19} /> : <LockIcon size={19} />}
-        </span>
+        <div className="absolute right-4 top-4 text-muted-foreground">
+          {published ? <GlobeIcon size={15} /> : <LockIcon size={15} />}
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex h-24 flex-col items-center justify-center rounded-lg bg-secondary">
             <h2 className="text-2xl font-semibold md:text-3xl">

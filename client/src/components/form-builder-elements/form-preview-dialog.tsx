@@ -15,6 +15,7 @@ import { useFormBuilderContext } from "@/hooks/use-form-builder-context";
 import { FormElements } from "./form-builder-elements";
 import SingleElementBaseStyle from "./single-element-base-style";
 import { useSingleFormData } from "@/hooks/use-single-form-data";
+import { cn } from "@/lib/utils";
 
 /* type FormPreviewDialogProps = {
   title: string;
@@ -57,8 +58,22 @@ export default function FormPreviewDialog() {
             <div className="space-y-3">
               {elements.map((element) => {
                 const FormComponent = FormElements[element.type].formComponent;
+
+                const elemType = FormElements[element.type].type;
+                const changeStyleWhen =
+                  elemType === "TitleField" ||
+                  elemType == "ParagraphField" ||
+                  elemType === "SubtitleField" ||
+                  elemType === "SeparatorField" ||
+                  elemType === "SpacerField";
+
                 return (
-                  <SingleElementBaseStyle key={element.id}>
+                  <SingleElementBaseStyle
+                    key={element.id}
+                    className={cn(
+                      changeStyleWhen && "h-fit border-none bg-transparent p-0",
+                    )}
+                  >
                     <FormComponent elementInstance={element} />
                   </SingleElementBaseStyle>
                 );

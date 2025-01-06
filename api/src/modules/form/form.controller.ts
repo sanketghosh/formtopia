@@ -193,8 +193,7 @@ export const fetchSingleFormHandler = catchErrors(
             content: true,
             city: true,
             country: true,
-            browser: true,
-            os: true,
+            continent: true,
             device: true,
           },
         },
@@ -513,10 +512,15 @@ export const formSubmitHandler = catchErrors(
 
     const userId = req.userId;
     const { shareUrl } = req.params;
-    const { content, browser, os, device } = req.body;
+    const { content, device } = req.body;
 
     const location = await fetch(`http://ip-api.com/json`);
-    const { city, country } = await location.json();
+    const { city, country, timezone } = await location.json();
+
+    let extractContinent = timezone.split("/");
+    const continent = extractContinent.length > 1 ? extractContinent[0] : null;
+
+    // console.log(continent);
 
     // if user is not authorized
     if (!userId) {
@@ -553,8 +557,7 @@ export const formSubmitHandler = catchErrors(
         content: content,
         city: city || null,
         country: country || null,
-        browser: browser || null,
-        os: os || null,
+        continent: continent || null,
         device: device || null,
       },
     });

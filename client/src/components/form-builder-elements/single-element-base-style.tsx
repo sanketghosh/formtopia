@@ -11,7 +11,7 @@ export default function SingleElementBaseStyle({
   return (
     <div
       className={cn(
-        "flex h-32 items-center rounded-lg border bg-background/40 px-3 py-3 opacity-100 transition-all",
+        "flex h-32 items-center rounded-lg border bg-background/40 px-4 py-3 opacity-100 transition-all",
         className,
       )}
     >

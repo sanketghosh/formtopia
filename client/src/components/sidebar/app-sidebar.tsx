@@ -40,8 +40,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Link to={"/dashboard"}>
             <SidebarMenuItem>
               <SidebarMenuButton size={"lg"}>
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-secondary text-background">
-                  <CircleIcon className="size-6 stroke-white" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg border">
+                  <CircleIcon className="size-6 stroke-black dark:stroke-white" />
                 </div>
                 <span className="text-2xl font-bold">formtopia</span>
               </SidebarMenuButton>
