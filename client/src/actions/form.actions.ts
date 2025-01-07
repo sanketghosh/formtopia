@@ -151,3 +151,16 @@ export const fetchFormsOverallMetricsAction = async () => {
   console.log(response.data);
   return response.data;
 };
+
+/***
+ *
+ *
+ *
+ */
+export const fetchFormWithSubmissionsAction = async (formId: string) => {
+  const response = await axiosApi.get(
+    `/api/v1/form/form-with-submissions/${formId}`,
+  );
+  console.log(response.data);
+  return response.data;
+};

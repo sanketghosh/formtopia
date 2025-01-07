@@ -63,6 +63,14 @@ export default function ElementsButtonsSidebar() {
           id: uuidGenerator(),
           element: FormElements.DateField,
         },
+        {
+          id: uuidGenerator(),
+          element: FormElements.SelectField,
+        },
+        {
+          id: uuidGenerator(),
+          element: FormElements.CheckboxField,
+        },
       ],
     },
   ];

@@ -45,7 +45,9 @@ export type ElementsType =
   | "SpacerField"
   | "NumberField"
   | "TextareaField"
-  | "DateField";
+  | "DateField"
+  | "SelectField"
+  | "CheckboxField";
 export type SubmitFunction = (key: string, value: string) => void;
 
 export type FormElement = {
@@ -140,4 +142,16 @@ export type SubmissionType = {
   submittedAt: string;
   device: string | null;
   os: string | null;
+};
+
+/************************* */
+
+export type ColumnType = {
+  id: string;
+  label: string;
+  required: boolean;
+  type: ElementsType;
+};
+export type RowType = { [key: string]: string } & {
+  submittedAt: Date;
 };

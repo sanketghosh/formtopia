@@ -1,5 +1,6 @@
 import {
   BAD_REQUEST,
+  CONFLICT,
   CREATED,
   NOT_FOUND,
   OK,
@@ -475,6 +476,39 @@ export const getFormByShareUrlHandler = catchErrors(
         published: form.published,
         formId: form.id,
       },
+    });
+  }
+);
+
+/**
+ *
+ *
+ *
+ */
+export const fetchFormWithSubmissionsHandler = catchErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    if (!userId) {
+      res.status(UNAUTHORIZED).json({
+        message: "ERROR! User is not authorized.",
+      });
+    }
+
+    const formWithSubmissions = await db.form.findUnique({
+      where: {
+        id: formId,
+        userId: userId,
+      },
+      include: {
+        formSubmissions: true,
+      },
+    });
+
+    res.status(OK).json({
+      message: "SUCCESS! Form submissions fetched",
+      data: formWithSubmissions,
     });
   }
 );

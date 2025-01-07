@@ -1,8 +1,10 @@
 import { FormElementsType } from "@/types";
 import {
+  CheckboxFieldFormElement,
   DateFieldFormElement,
   NumberFieldFormElement,
   ParagraphFieldFormElement,
+  SelectFieldFormElement,
   SeparatorFieldFormElement,
   SpacerFieldFormElement,
   SubtitleFieldFormElement,
@@ -21,4 +23,6 @@ export const FormElements: FormElementsType = {
   NumberField: NumberFieldFormElement,
   TextareaField: TextareaFieldFormElement,
   DateField: DateFieldFormElement,
+  SelectField: SelectFieldFormElement,
+  CheckboxField: CheckboxFieldFormElement,
 };

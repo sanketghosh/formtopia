@@ -23,9 +23,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useState } from "react";
+
+type FormSubmissionAccessType = "authenticated" | "everyone";
 
 export default function PublishFormAlert() {
   const { formId, formData } = useSingleFormData();
+  const [selectedValue, setSelectedValue] =
+    useState<FormSubmissionAccessType>("everyone");
   // const [isPublishContentLengthZero, setIsPublishContentLengthZero] =
   //   useState(false);
 
@@ -62,6 +69,11 @@ export default function PublishFormAlert() {
     }
   }
 
+  const handleSubmissionTypeChange = (value: FormSubmissionAccessType) => {
+    setSelectedValue(value);
+  };
+
+  // console.log(selectedValue);
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -80,13 +92,31 @@ export default function PublishFormAlert() {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. After publishing you'll not be able to
-            edit this form. <br />
-            <span>
-              By publishing this you'll make it public and will be able to
-              collect submissions.
-            </span>
+            edit this form.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <div className="space-y-3 rounded-md bg-secondary/30 px-4 py-6">
+          <div className="text-sm">
+            Choose who can submit your form. Think wisely as you cannot undone
+            it.
+          </div>
+          <div className="flex items-center gap-1">
+            <RadioGroup
+              className="flex items-center gap-5"
+              defaultValue={selectedValue}
+              onValueChange={handleSubmissionTypeChange}
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="authenticated" />
+                <Label>Authenticated Users</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="everyone" />
+                <Label>Everyone</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction

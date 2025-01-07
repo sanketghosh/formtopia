@@ -1,5 +1,14 @@
-import { fetchSingleFormAction } from "@/actions/form.actions";
-import { ElementsType, FormElementInstance, SubmissionType } from "@/types";
+import {
+  fetchFormWithSubmissionsAction,
+  fetchSingleFormAction,
+} from "@/actions/form.actions";
+import {
+  ColumnType,
+  ElementsType,
+  FormElementInstance,
+  RowType,
+  SubmissionType,
+} from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import {
@@ -11,27 +20,31 @@ import {
   TableRow,
 } from "../ui/table";
 import { formatDate } from "@/utils/format-date";
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
+import { Checkbox } from "../ui/checkbox";
+import { exportToExcel } from "@/utils/export-to-excel";
+import { Button } from "../ui/button";
+import { DownloadIcon } from "lucide-react";
 
-type ColumnType = {
-  id: string;
-  label: string;
-  required: boolean;
-  type: ElementsType;
-};
-type RowType = { [key: string]: string } & {
-  submittedAt: Date;
-};
+const excludedTypes = [
+  "TitleField",
+  "SubtitleField",
+  "ParagraphField",
+  "SeparatorField",
+  "SpacerField",
+];
 
 export default function FormSubmissionsTable() {
   const { id } = useParams<{ id?: string }>();
 
   const { data, isError, error } = useQuery({
-    queryFn: () => fetchSingleFormAction(id!),
+    queryFn: () => fetchFormWithSubmissionsAction(id!),
     queryKey: ["single-form-data-submission-table", id],
     staleTime: 5000,
     refetchOnWindowFocus: true,
   });
+
+  // console.log(JSON.parse(data?.data));
 
   if (isError) {
     return (
@@ -42,11 +55,10 @@ export default function FormSubmissionsTable() {
   }
 
   const formSubmissions = data?.data?.formSubmissions;
-  // console.log(formSubmissions);
   if (!formSubmissions || formSubmissions.length === 0) {
     return <div>No submissions found</div>;
   }
-  const formContent = data?.data?.content; // Assuming this contains form attributes
+  const formContent = data?.data?.content;
 
   if (!formSubmissions || formSubmissions.length === 0) {
     return <div>No submissions found</div>;
@@ -56,27 +68,16 @@ export default function FormSubmissionsTable() {
     return <div>No form structure found</div>;
   }
 
-  // Parse form attributes into columns
-  const columns: ColumnType[] = JSON.parse(formContent).map(
-    (element: FormElementInstance) => ({
+  const columns: ColumnType[] = JSON.parse(formContent)
+    .filter(
+      (element: FormElementInstance) => !excludedTypes.includes(element.type),
+    )
+    .map((element: FormElementInstance) => ({
       id: element.id,
       label: element.extraAttributes?.label || `Field ${element.id}`,
       required: element.extraAttributes?.required || false,
       type: element.type,
-    }),
-  );
-
-  // Create rows for the submissions
-  /*   const rows: RowType[] = formSubmissions.map((submission) => {
-    const parsedContent = JSON.parse(submission.content);
-    const row: RowType = { submissionId: submission.id }; // Include a unique row identifier
-
-    columns.forEach((column) => {
-      row[column.id] = parsedContent[column.id] || "N/A"; // Match submission content to form attributes
-    });
-
-    return row;
-  }); */
+    }));
 
   let rows: RowType[] = [];
   formSubmissions.forEach((submission: SubmissionType) => {
@@ -87,17 +88,23 @@ export default function FormSubmissionsTable() {
     });
   });
 
-  // Debugging logs
-  /*   console.log("Columns:", columns);
-  console.log("Rows:", rows); */
-
   if (columns.length === 0) {
     return <div>No valid columns found in form structure</div>;
   }
 
+  const exportToXlsxHandler = () => {
+    exportToExcel(columns, rows, "Form Submissions");
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold">Submissions</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Submissions</h2>
+        <Button onClick={exportToXlsxHandler} size={"sm"} variant={"secondary"}>
+          Download data
+          <DownloadIcon />
+        </Button>
+      </div>
       <div className="rounded-md border p-2">
         <Table>
           <TableHeader>
@@ -133,5 +140,28 @@ export default function FormSubmissionsTable() {
 function RowCell({ type, value }: { type: ElementsType; value: string }) {
   let node: React.ReactNode = value;
 
+  switch (type) {
+    case "DateField":
+      if (!value) break;
+      const date = new Date(value);
+      node = <p>{format(date, "dd/MM/yyyy")}</p>;
+      break;
+    case "CheckboxField":
+      const checked = value === "true";
+      //      node = checked?"true":"false";
+      node = <Checkbox checked={checked} disabled />;
+      break;
+  }
+
   return <TableCell>{node}</TableCell>;
 }
+
+// was first approach to filter column but it was not excluding types
+/* const columns: ColumnType[] = JSON.parse(formContent).map(
+    (element: FormElementInstance) => ({
+      id: element.id,
+      label: element.extraAttributes?.label || `Field ${element.id}`,
+      required: element.extraAttributes?.required || false,
+      type: element.type,
+    }),
+  ); */

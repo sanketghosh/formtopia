@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -20,7 +20,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  forms Form[]
+  forms          Form[]
+  formSubmission FormSubmission[]
 
   @@map("users")
 }
@@ -41,6 +42,10 @@ model Form {
 
   shareURL String @unique @default(uuid())
 
+  submissionAccess String    @default("everyone")
+  isTrashed        Boolean   @default(false)
+  trashedAt        DateTime?
+
   formSubmissions FormSubmission[]
   user            User             @relation(fields: [userId], references: [id])
 
@@ -52,6 +57,8 @@ model FormSubmission {
   formId      String
   submittedAt DateTime @default(now())
   form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
 
   content String // Captured form data in JSON
 
@@ -60,5 +67,6 @@ model FormSubmission {
   continent String?
   device    String?
 
+  @@unique([formId, userId])
   @@map("form_submissions")
 }

@@ -12,7 +12,7 @@ export default function FormBuilderSidebar() {
   const { selectedElement, setSelectedElement } = useFormBuilderContext();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[350px] overflow-y-auto border-l border-sidebar-border bg-sidebar lg:block">
+    <aside className="sticky top-0 hidden h-screen w-[400px] overflow-y-auto border-l border-sidebar-border bg-sidebar lg:block">
       <div className="space-y-6 px-5 py-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">

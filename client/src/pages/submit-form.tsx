@@ -39,7 +39,7 @@ export default function SubmitForm() {
     staleTime: 5000,
   });
 
-  // console.log("@@@SUBMIT FORM", data?.data);
+  console.log("@@@SUBMIT FORM", data?.data);
 
   if (data?.data.published === false) {
     return (
@@ -102,7 +102,7 @@ export default function SubmitForm() {
 
   return (
     <main className="flex h-full min-h-screen w-full items-center justify-center overflow-y-auto bg-sidebar/30 p-4 md:p-6 lg:p-8">
-      <div className="container max-h-[650px] min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
+      <div className="container min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
         <div>
           <h2 className="text-lg font-semibold md:text-xl">
             {data?.data.title}
@@ -235,8 +235,23 @@ function FormSubmitComponent({
               return null;
             }
 
+            const elemType = FormElements[element.type].type;
+            const changeStyleWhen =
+              elemType === "TitleField" ||
+              elemType == "ParagraphField" ||
+              elemType === "SubtitleField" ||
+              elemType === "SeparatorField" ||
+              elemType === "SpacerField";
+
             return (
-              <SingleElementBaseStyle key={element.id}>
+              <SingleElementBaseStyle
+                key={element.id}
+                className={cn(
+                  FormElements[element.type].type === "TextareaField" &&
+                    "h-fit",
+                  changeStyleWhen && "h-fit border-none bg-transparent p-0",
+                )}
+              >
                 <FormElement
                   elementInstance={element}
                   submitValue={submitValue}
@@ -247,7 +262,13 @@ function FormSubmitComponent({
             );
           })}
         </div>
-        <Button className="mt-4 w-full">Submit</Button>
+        <Button className="mt-4 w-full" disabled={mutation.isPending}>
+          {mutation.isPending ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            "Submit"
+          )}
+        </Button>
       </form>
     </div>
   );

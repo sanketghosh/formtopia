@@ -81,6 +81,9 @@
   }
   body {
     @apply bg-background font-parkinsans text-foreground;
+    /* For Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: hsl(0 0% 14.9%);
   }
 }
 @layer base {
@@ -89,8 +92,22 @@
   }
   body {
     @apply bg-background text-foreground;
-    ::-webkit-scrollbar {
-      @apply w-2 bg-secondary;
-    }
   }
+}
+
+/* For Webkit browsers */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply rounded-md bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-md border bg-secondary/30;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary;
 }

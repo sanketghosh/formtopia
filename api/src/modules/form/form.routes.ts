@@ -5,6 +5,7 @@ import express from "express";
 import { verifyToken } from "@/middlewares/verify-token";
 import {
   fetchFormsHandler,
+  fetchFormWithSubmissionsHandler,
   fetchSingleFormHandler,
   formCreateHandler,
   formStatsHandler,
@@ -37,6 +38,11 @@ router.get(
 );
 router.get("/form/form-by-share-url/:shareUrl", getFormByShareUrlHandler);
 router.post("/form/submit/:shareUrl", verifyToken, formSubmitHandler);
+router.get(
+  "/form/form-with-submissions/:formId",
+  verifyToken,
+  fetchFormWithSubmissionsHandler
+);
 /* router.get(
   "/form/get-all-form-metrics",
   verifyToken,
