@@ -2,6 +2,7 @@ import {
   BAD_REQUEST,
   CONFLICT,
   CREATED,
+  FORBIDDEN,
   NOT_FOUND,
   OK,
   UNAUTHORIZED,
@@ -286,6 +287,7 @@ export const publishFormHandler = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
     const { formId } = req.params;
+    const { submissionAccess } = req.body;
 
     // If unauthorized
     if (!userId) {
@@ -293,6 +295,17 @@ export const publishFormHandler = catchErrors(
         message: "ERROR! Unauthorized. Cannot fulfill your request.",
       });
     }
+
+    // validate submissionAccess value
+    if (
+      submissionAccess &&
+      !["everyone", "authenticated"].includes(submissionAccess)
+    ) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Invalid submission access value.",
+      });
+    }
+
     // Fetch the form to ensure it exists and belongs to the user
     const existingForm = await db.form.findFirst({
       where: {
@@ -323,7 +336,10 @@ export const publishFormHandler = catchErrors(
     // Publish the form
     const publishedForm = await db.form.update({
       where: { id: formId },
-      data: { published: true },
+      data: {
+        published: true,
+        submissionAccess: submissionAccess || "everyone", //default to "everyone" if not provided
+      },
     });
 
     // if form not publish due to an error
@@ -445,6 +461,7 @@ export const getFormByShareUrlHandler = catchErrors(
         content: true,
         shareURL: true,
         published: true,
+        submissionAccess: true,
       },
     });
 
@@ -474,6 +491,7 @@ export const getFormByShareUrlHandler = catchErrors(
         content: form.content,
         shareUrl: form.shareURL,
         published: form.published,
+        submissionAccess: form.submissionAccess,
         formId: form.id,
       },
     });
@@ -578,16 +596,45 @@ export const formSubmitHandler = catchErrors(
       },
     });
 
-    if (!form) {
+    // if there is no form or form is not published
+    if (!form || !form.published) {
       return res.status(BAD_REQUEST).json({
         message: "ERROR! Form not found.",
       });
+    }
+
+    // enforce submission access rules based on the form's submissionAccess
+    if (form.submissionAccess === "authenticated" && !userId) {
+      res.status(FORBIDDEN).json({
+        message: "ERROR! Only authenticated users can submit this form.",
+      });
+    }
+
+    // checking if the authenticated user has already submitted the form
+    if (userId) {
+      const existingSubmissionByUser = await db.formSubmission.findFirst({
+        where: {
+          formId: form.id,
+          /* form: {
+            submissionAccess: "authenticated",
+          }, */
+          userId: userId, // must match the authenticated user's submission
+        },
+      });
+
+      // if a submission exists, prevent duplicate submission
+      if (existingSubmissionByUser) {
+        res.status(BAD_REQUEST).json({
+          message: "ERROR! You have already submitted this form.",
+        });
+      }
     }
 
     // Save the form submission
     const submission = await db.formSubmission.create({
       data: {
         formId: form.id,
+        userId: userId || null,
         content: content,
         city: city || null,
         country: country || null,

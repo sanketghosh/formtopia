@@ -155,3 +155,5 @@ export type ColumnType = {
 export type RowType = { [key: string]: string } & {
   submittedAt: Date;
 };
+
+export type SubmissionAccessType = "authenticated" | "everyone";

@@ -26,13 +26,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
-
-type FormSubmissionAccessType = "authenticated" | "everyone";
+import { SubmissionAccessType } from "@/types";
 
 export default function PublishFormAlert() {
   const { formId, formData } = useSingleFormData();
   const [selectedValue, setSelectedValue] =
-    useState<FormSubmissionAccessType>("everyone");
+    useState<SubmissionAccessType>("everyone");
   // const [isPublishContentLengthZero, setIsPublishContentLengthZero] =
   //   useState(false);
 
@@ -65,11 +64,14 @@ export default function PublishFormAlert() {
         "Sorry, you must add at least one element to publish the form.",
       );
     } else {
-      mutation.mutate(formId!);
+      mutation.mutate({
+        formId: formId!,
+        submissionAccess: selectedValue,
+      });
     }
   }
 
-  const handleSubmissionTypeChange = (value: FormSubmissionAccessType) => {
+  const handleSubmissionTypeChange = (value: SubmissionAccessType) => {
     setSelectedValue(value);
   };
 

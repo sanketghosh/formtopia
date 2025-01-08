@@ -1,6 +1,6 @@
 import axiosApi from "@/lib/axios-api";
 import { StartFormCreationSchema } from "@/schemas";
-import { SortOrderType } from "@/types";
+import { SortOrderType, SubmissionAccessType } from "@/types";
 import { z } from "zod";
 
 /**
@@ -76,9 +76,20 @@ export const updateFormAction = async ({
  * @param formId
  * @returns
  */
-export const publishFormAction = async (formId?: string) => {
-  const response = await axiosApi.post(`/api/v1/form/publish-form/${formId}`);
-  // console.log(response.data);
+
+type PublishFormActionDataTypes = {
+  formId: string;
+  submissionAccess: SubmissionAccessType;
+};
+
+export const publishFormAction = async ({
+  formId,
+  submissionAccess,
+}: PublishFormActionDataTypes) => {
+  const response = await axiosApi.post(`/api/v1/form/publish-form/${formId}`, {
+    submissionAccess,
+  });
+  console.log(response.data);
   return response.data;
 };
 
@@ -133,7 +144,7 @@ export const submitFormAction = async ({
     content,
     device,
   });
-  // console.log(response.data);
+  console.log(response.data);
   return response.data;
 };
 

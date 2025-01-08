@@ -1,7 +1,7 @@
 // packages
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { v4 as uuidGenerator } from "uuid";
@@ -9,11 +9,13 @@ import Confetti from "react-confetti";
 
 // local modules
 import { cn } from "@/lib/utils";
-import { FormElementInstance } from "@/types";
+import { FormElementInstance, SubmissionAccessType } from "@/types";
 import {
   fetchFormByShareUrlAction,
   submitFormAction,
 } from "@/actions/form.actions";
+import { useAuthContext } from "@/hooks/use-auth-context";
+import { getDeviceTypeFromUserAgent } from "@/utils/get-device-info";
 
 // components
 import { FormElements } from "@/components/form-builder-elements/form-builder-elements";
@@ -27,11 +29,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getDeviceTypeFromUserAgent } from "@/utils/get-device-info";
+import OnlyAuthenticatedFormSubmissionAlert from "@/components/alert-dialog/only-authenticated-form-submission-alert";
 
 export default function SubmitForm() {
   const { id } = useParams<{ id?: string }>();
+  const [showAuthenticationAlert, setShowAuthenticationAlert] =
+    useState<boolean>(false);
   const navigate = useNavigate();
+  const { user } = useAuthContext();
+
+  console.log(user?.id);
 
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ["fetch-single-form-content", id],
@@ -39,7 +46,15 @@ export default function SubmitForm() {
     staleTime: 5000,
   });
 
-  console.log("@@@SUBMIT FORM", data?.data);
+  console.log("@@@SUBMIT FORM", data?.data.submissionAccess);
+
+  const dataSubAccess = data?.data.submissionAccess as SubmissionAccessType;
+
+  useEffect(() => {
+    if (!user?.id && dataSubAccess === "authenticated") {
+      setShowAuthenticationAlert(true);
+    }
+  });
 
   if (data?.data.published === false) {
     return (
@@ -100,8 +115,18 @@ export default function SubmitForm() {
     );
   }
 
+  /*  if (showAuthenticationAlert) {
+    return <OnlyAuthenticatedFormSubmissionAlert />;
+  } */
+
   return (
     <main className="flex h-full min-h-screen w-full items-center justify-center overflow-y-auto bg-sidebar/30 p-4 md:p-6 lg:p-8">
+      {showAuthenticationAlert && (
+        <OnlyAuthenticatedFormSubmissionAlert
+          setShowAuthenticationAlert={setShowAuthenticationAlert}
+          showAuthenticationAlert={showAuthenticationAlert}
+        />
+      )}
       <div className="container min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
         <div>
           <h2 className="text-lg font-semibold md:text-xl">
@@ -184,7 +209,7 @@ function FormSubmitComponent({
       toast.success(data.message);
       setFormSubmitted(true);
     },
-    onError: (data: Error) => {
+    onError: (data) => {
       toast.error(data.message);
     },
   });
