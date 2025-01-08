@@ -24,7 +24,8 @@ import { format, formatDistance } from "date-fns";
 import { Checkbox } from "../ui/checkbox";
 import { exportToExcel } from "@/utils/export-to-excel";
 import { Button } from "../ui/button";
-import { DownloadIcon } from "lucide-react";
+import { ArrowUpDownIcon, DownloadIcon } from "lucide-react";
+import { useState } from "react";
 
 const excludedTypes = [
   "TitleField",
@@ -34,8 +35,11 @@ const excludedTypes = [
   "SpacerField",
 ];
 
+type SortOrderType = "latest" | "earliest";
+
 export default function FormSubmissionsTable() {
   const { id } = useParams<{ id?: string }>();
+  const [sortOrder, setSortOrder] = useState<SortOrderType>("latest");
 
   const { data, isError, error } = useQuery({
     queryFn: () => fetchFormWithSubmissionsAction(id!),
@@ -92,6 +96,19 @@ export default function FormSubmissionsTable() {
     return <div>No valid columns found in form structure</div>;
   }
 
+  rows.sort((a, b) => {
+    const dateA = new Date(a.submittedAt).getTime();
+    const dateB = new Date(b.submittedAt).getTime();
+
+    return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
+  });
+
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) =>
+      prevOrder === "latest" ? "earliest" : "latest",
+    );
+  };
+
   const exportToXlsxHandler = () => {
     exportToExcel(columns, rows, "Form Submissions");
   };
@@ -100,10 +117,20 @@ export default function FormSubmissionsTable() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Submissions</h2>
-        <Button onClick={exportToXlsxHandler} size={"sm"} variant={"secondary"}>
-          Download data
-          <DownloadIcon />
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button onClick={toggleSortOrder} size="sm" variant="secondary">
+            {sortOrder === "latest" ? "Earliest" : "Latest"}
+            <ArrowUpDownIcon />
+          </Button>
+          <Button
+            onClick={exportToXlsxHandler}
+            size={"sm"}
+            variant={"secondary"}
+          >
+            Download data
+            <DownloadIcon />
+          </Button>
+        </div>
       </div>
       <div className="rounded-md border p-2">
         <Table>

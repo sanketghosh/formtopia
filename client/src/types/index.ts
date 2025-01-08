@@ -21,6 +21,7 @@ export type FormCardType = {
   updatedAt: Date;
   createdAt: Date;
   published: boolean;
+  isTrashed: boolean;
 };
 
 /***********************************

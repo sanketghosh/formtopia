@@ -143,6 +143,7 @@ export const fetchFormsHandler = catchErrors(
         updatedAt: true,
         visitsCount: true,
         submissionsCount: true,
+        isTrashed: true,
       },
       orderBy: {
         createdAt: sort === "latest" ? "desc" : "asc",
@@ -531,22 +532,6 @@ export const fetchFormWithSubmissionsHandler = catchErrors(
   }
 );
 
-/**
- *
- *
- *
- */
-export const deleteFormHandler = catchErrors(
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void | any> => {
-    const userId = req.userId;
-    const { formId } = req.params;
-  }
-);
-
 /***
  *
  *
@@ -560,7 +545,7 @@ export const formSubmitHandler = catchErrors(
     res: Response,
     next: NextFunction
   ): Promise<void | any> => {
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    // const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
     const userId = req.userId;
     const { shareUrl } = req.params;
@@ -605,7 +590,7 @@ export const formSubmitHandler = catchErrors(
 
     // enforce submission access rules based on the form's submissionAccess
     if (form.submissionAccess === "authenticated" && !userId) {
-      res.status(FORBIDDEN).json({
+      return res.status(FORBIDDEN).json({
         message: "ERROR! Only authenticated users can submit this form.",
       });
     }
@@ -615,13 +600,9 @@ export const formSubmitHandler = catchErrors(
       const existingSubmissionByUser = await db.formSubmission.findFirst({
         where: {
           formId: form.id,
-          /* form: {
-            submissionAccess: "authenticated",
-          }, */
           userId: userId, // must match the authenticated user's submission
         },
       });
-
       // if a submission exists, prevent duplicate submission
       if (existingSubmissionByUser) {
         res.status(BAD_REQUEST).json({
@@ -644,7 +625,7 @@ export const formSubmitHandler = catchErrors(
     });
 
     if (!submission) {
-      return res.status(BAD_REQUEST).json({
+      res.status(BAD_REQUEST).json({
         message: "ERROR! Failed to submit the form.",
       });
     }
@@ -747,3 +728,114 @@ export const formSubmitHandler = catchErrors(
   }
 );
  */
+
+/***
+ *
+ *
+ *
+ *
+ */
+export const moveFormToTrashHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    // if user is not authorized.
+    if (!userId) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! User not authorized.",
+      });
+    }
+
+    const form = await db.form.findUnique({
+      where: {
+        id: formId,
+      },
+    });
+
+    // if form not found
+    if (!form) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Form has not been found.",
+      });
+    }
+
+    /// trash form
+    const trashedForm = await db.form.update({
+      where: {
+        id: formId,
+      },
+      data: {
+        isTrashed: true,
+      },
+    });
+
+    if (!trashedForm) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Failed to trash form.",
+      });
+    }
+
+    res.status(OK).json({
+      message: "SUCCESS! Form has been trashed.",
+      data: trashedForm,
+    });
+  }
+);
+
+/***
+ *
+ *
+ *
+ *
+ *
+ */
+export const fetchTrashedFormsHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const userId = req.userId;
+
+    // if user is not unauthorized
+    if (!userId) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Unauthorized, cannot find user.",
+      });
+    }
+
+    // trashed forms
+    const trashedForms = await db.form.findMany({
+      where: {
+        isTrashed: true,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
+        visitsCount: true,
+        submissionsCount: true,
+        isTrashed: true,
+      },
+    });
+
+    if (!trashedForms) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Trashed forms not found.",
+      });
+    }
+
+    res.status(OK).json({
+      message: "SUCCESS! Trashed forms have been fetched.",
+      data: trashedForms,
+    });
+  }
+);

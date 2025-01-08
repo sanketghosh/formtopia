@@ -7,10 +7,12 @@ import {
   fetchFormsHandler,
   fetchFormWithSubmissionsHandler,
   fetchSingleFormHandler,
+  fetchTrashedFormsHandler,
   formCreateHandler,
   formStatsHandler,
   formSubmitHandler,
   getFormByShareUrlHandler,
+  moveFormToTrashHandler,
   publishFormHandler,
   singleFormStatsHandler,
   updateFormHandler,
@@ -43,10 +45,7 @@ router.get(
   verifyToken,
   fetchFormWithSubmissionsHandler
 );
-/* router.get(
-  "/form/get-all-form-metrics",
-  verifyToken,
-  getAllFormsOverallMetricsHandler
-); */
+router.put("/form/trash-form/:formId", verifyToken, moveFormToTrashHandler);
+router.get("/form/trashed-forms", verifyToken, fetchTrashedFormsHandler);
 
 export default router;

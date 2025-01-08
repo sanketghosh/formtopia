@@ -46,7 +46,7 @@ export default function SubmitForm() {
     staleTime: 5000,
   });
 
-  console.log("@@@SUBMIT FORM", data?.data.submissionAccess);
+  // console.log("@@@SUBMIT FORM", data?.data);
 
   const dataSubAccess = data?.data.submissionAccess as SubmissionAccessType;
 
@@ -128,15 +128,15 @@ export default function SubmitForm() {
         />
       )}
       <div className="container min-h-full w-full space-y-6 overflow-y-auto rounded-lg bg-sidebar px-4 py-6 shadow-lg sm:w-[550px] md:w-[600px]">
-        <div>
+        {/* <div>
           <h2 className="text-lg font-semibold md:text-xl">
             {data?.data.title}
           </h2>
           <p className="text-sm font-medium text-muted-foreground">
             {data?.data.description}
           </p>
-        </div>
-        <Separator />
+        </div> 
+        <Separator />*/}
         <FormSubmitComponent
           content={data?.data.content}
           shareUrl={data?.data.shareUrl}
@@ -171,7 +171,9 @@ function FormSubmitComponent({
     parsedContent = JSON.parse(content);
   } catch (error) {
     console.error("Failed to parse content:", error);
-    toast.error("ERROR! Failed to parse, check console for details");
+    toast.error(
+      "ERROR! Failed to parse, check console for details or maybe just reload the page.",
+    );
   }
 
   const formValues = useRef<{ [key: string]: string }>({});
@@ -209,8 +211,8 @@ function FormSubmitComponent({
       toast.success(data.message);
       setFormSubmitted(true);
     },
-    onError: (data) => {
-      toast.error(data.message);
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
     },
   });
 

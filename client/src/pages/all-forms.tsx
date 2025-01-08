@@ -30,8 +30,12 @@ export default function AllForms() {
     staleTime: 5000,
   });
 
+  // console.log(data?.data);
+
   // Filter the forms based on the selected status
   const filteredForms = data?.data.filter((form: FormCardType) => {
+    if (form.isTrashed) return false;
+
     if (filterStatus === "all") return true;
     if (filterStatus === "published") return form.published === true;
     if (filterStatus === "unpublished") return form.published === false;

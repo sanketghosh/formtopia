@@ -1,5 +1,11 @@
 // packages
-import { EyeIcon, GlobeIcon, LockIcon, PenIcon } from "lucide-react";
+import {
+  ArchiveIcon,
+  EyeIcon,
+  GlobeIcon,
+  LockIcon,
+  PenIcon,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 // local modules
@@ -16,7 +22,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import TrashAlert from "../alert-dialog/trash-alert";
 
 type FormCardProps = {
   data: FormCardType;
@@ -24,7 +31,7 @@ type FormCardProps = {
 
 export default function FormCard({
   data: {
-    updatedAt,
+    createdAt,
     visitsCount,
     description,
     submissionsCount,
@@ -33,7 +40,7 @@ export default function FormCard({
     id,
   },
 }: FormCardProps) {
-  const formattedDate = formatDate(updatedAt);
+  const formattedDate = formatDate(createdAt);
 
   return (
     <Card className="relative">
@@ -44,7 +51,7 @@ export default function FormCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="absolute right-4 top-4 text-muted-foreground">
+        <div className="absolute right-2 top-2 space-x-2 text-muted-foreground">
           {published ? <GlobeIcon size={15} /> : <LockIcon size={15} />}
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -63,38 +70,45 @@ export default function FormCard({
         </div>
 
         <p className="text-sm font-medium text-muted-foreground">
-          {published ? "Published" : "Last updated"} on {formattedDate}
+          {/* {published ? "Published" : "Last updated"} on {formattedDate} */}
+          Created {formattedDate}
         </p>
       </CardContent>
       <CardFooter className="flex w-full items-center justify-end gap-3 lg:justify-between">
         {!published ? (
-          <Link
-            to={`/create-form/${id}`}
-            className={cn(
-              buttonVariants({
-                variant: "default",
-                size: "sm",
-              }),
-              "w-full",
-            )}
-          >
-            <PenIcon size={17} />
-            <p>Edit Form</p>
-          </Link>
+          <div className="flex w-full items-center gap-3">
+            <Link
+              to={`/create-form/${id}`}
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                  size: "sm",
+                }),
+                "w-full",
+              )}
+            >
+              <PenIcon size={17} />
+              <p>Edit Form</p>
+            </Link>
+            <TrashAlert formId={id} />
+          </div>
         ) : (
-          <Link
-            to={`/single-form-data/${id}`}
-            className={cn(
-              buttonVariants({
-                variant: "default",
-                size: "sm",
-              }),
-              "w-full",
-            )}
-          >
-            <EyeIcon size={17} />
-            <p>Form Data</p>
-          </Link>
+          <div className="flex w-full items-center gap-3">
+            <Link
+              to={`/single-form-data/${id}`}
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                  size: "sm",
+                }),
+                "w-full",
+              )}
+            >
+              <EyeIcon size={17} />
+              <p>Form Data</p>
+            </Link>
+            <TrashAlert formId={id} />
+          </div>
         )}
       </CardFooter>
     </Card>

@@ -175,3 +175,29 @@ export const fetchFormWithSubmissionsAction = async (formId: string) => {
   console.log(response.data);
   return response.data;
 };
+
+/***
+ *
+ *
+ *
+ */
+
+export const moveFormToTrashAction = async (formId: string) => {
+  console.log(formId);
+
+  const response = await axiosApi.put(`/api/v1/form/trash-form/${formId}`);
+  console.log(response.data);
+  return response.data;
+};
+
+/***
+ *
+ *
+ *
+ *
+ */
+export const fetchTrashedFormsAction = async () => {
+  const response = await axiosApi.get("/api/v1/form/trashed-forms");
+  console.log(response.data);
+  return response.data;
+};
