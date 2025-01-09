@@ -201,3 +201,33 @@ export const fetchTrashedFormsAction = async () => {
   console.log(response.data);
   return response.data;
 };
+
+/***
+ *
+ *
+ *
+ *
+ */
+export const recoverFormTrashAction = async (formId: string) => {
+  //  console.log(formId);
+  const response = await axiosApi.put(
+    `/api/v1/form/recover-from-trash/${formId}`,
+  );
+  console.log(response.data);
+  return response.data;
+};
+
+/***
+ *
+ *
+ *
+ *
+ */
+export const deletePermanentlyAction = async (formId: string) => {
+  //  console.log(formId);
+  const response = await axiosApi.delete(
+    `/api/v1/form/delete-permanently/${formId}`,
+  );
+  console.log(response.data);
+  return response.data;
+};

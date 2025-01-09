@@ -771,6 +771,7 @@ export const moveFormToTrashHandler = catchErrors(
       },
       data: {
         isTrashed: true,
+        trashedAt: new Date(), // trashed at time to current time
       },
     });
 
@@ -824,6 +825,7 @@ export const fetchTrashedFormsHandler = catchErrors(
         visitsCount: true,
         submissionsCount: true,
         isTrashed: true,
+        trashedAt: true,
       },
     });
 
@@ -839,3 +841,163 @@ export const fetchTrashedFormsHandler = catchErrors(
     });
   }
 );
+
+/***
+ *
+ *
+ *
+ *
+ */
+
+export const recoverFromTrashHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    /// if user does not exist
+    if (!userId) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR1 User is not authenticated.",
+      });
+    }
+
+    // find the form
+    const form = await db.form.findUnique({
+      where: {
+        id: formId,
+      },
+    });
+
+    // if form not found
+    if (!form) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Form has not been found.",
+      });
+    }
+
+    // if form is not published
+    if (!form?.isTrashed) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Form is not in trash",
+      });
+    }
+
+    // recover form
+    const recoverForm = await db.form.update({
+      where: {
+        id: formId,
+      },
+      data: {
+        isTrashed: false,
+        trashedAt: null,
+      },
+    });
+
+    // if fails to recover
+    if (!recoverForm) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Form failed to recover.",
+      });
+    }
+
+    res.status(OK).json({
+      message: "SUCCESS! Form has been recovered from trash",
+      data: recoverForm,
+    });
+  }
+);
+
+/***
+ *
+ *
+ *
+ *
+ */
+
+export const deleteFromTrashHandler = catchErrors(
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void | any> => {
+    const userId = req.userId;
+    const { formId } = req.params;
+
+    // if user is not unauthorized
+    if (!userId) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! User not authorized.",
+      });
+    }
+
+    // find the form to ensure it exists
+    const form = await db.form.findUnique({
+      where: {
+        id: formId,
+      },
+    });
+
+    // check if the form exists
+    if (!form) {
+      res.status(BAD_REQUEST).json({
+        message: "ERROR! Form not found.",
+      });
+    }
+
+    // if form is in the trash
+    if (!form?.isTrashed) {
+      res.status(BAD_REQUEST).json({
+        message:
+          "ERROR! Form is not in trash and cannot be deleted permanently.",
+      });
+    }
+
+    // permanently delete the form
+    await db.form.delete({
+      where: {
+        id: formId,
+      },
+    });
+
+    res.status(OK).json({
+      message: "SUCCESS! Form has been permanently deleted.",
+    });
+  }
+);
+
+/**
+ *
+ *
+ *
+ *
+ */
+
+/* export const deleteOldTrashedForms = async () => {
+  const oneMinuteAgo = new Date();
+  oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1); // 1 minute ago
+
+  try {
+    // Delete forms that are trashed and older than 1 minute
+    const deletedForms = await db.form.deleteMany({
+      where: {
+        isTrashed: true,
+        trashedAt: {
+          lte: oneMinuteAgo, // Less than or equal to 1 minute ago
+        },
+      },
+    });
+
+    if (deletedForms.count > 0) {
+      console.log(`SUCCESS: Deleted ${deletedForms.count} forms from trash.`);
+    } else {
+      console.log("SUCCESS: No forms were found for deletion.");
+    }
+  } catch (error) {
+    console.error("ERROR: Failed to delete old trashed forms:", error);
+  }
+};
+ */

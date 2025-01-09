@@ -12,6 +12,7 @@ import { errorHandler } from "@/middlewares";
 import authRoutes from "@/modules/auth/auth.routes";
 import formRoutes from "@/modules/form/form.routes";
 import healthCheck from "@/modules/health-check";
+import "@/cron/delete";
 
 // app initializer
 const app = express();

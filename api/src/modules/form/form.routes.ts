@@ -4,6 +4,7 @@ import express from "express";
 // local modules
 import { verifyToken } from "@/middlewares/verify-token";
 import {
+  deleteFromTrashHandler,
   fetchFormsHandler,
   fetchFormWithSubmissionsHandler,
   fetchSingleFormHandler,
@@ -14,6 +15,7 @@ import {
   getFormByShareUrlHandler,
   moveFormToTrashHandler,
   publishFormHandler,
+  recoverFromTrashHandler,
   singleFormStatsHandler,
   updateFormHandler,
 } from "@/modules/form/form.controller";
@@ -47,5 +49,15 @@ router.get(
 );
 router.put("/form/trash-form/:formId", verifyToken, moveFormToTrashHandler);
 router.get("/form/trashed-forms", verifyToken, fetchTrashedFormsHandler);
+router.put(
+  "/form/recover-from-trash/:formId",
+  verifyToken,
+  recoverFromTrashHandler
+);
+router.delete(
+  "/form/delete-permanently/:formId",
+  verifyToken,
+  deleteFromTrashHandler
+);
 
 export default router;

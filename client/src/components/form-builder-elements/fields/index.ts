@@ -1,9 +1,12 @@
+// layout elements
 import { TitleFieldFormElement } from "@/components/form-builder-elements/fields/layout-elements/title-field";
-import { TextFieldFormElement } from "@/components/form-builder-elements/fields/form-elements/text-field";
 import { SubtitleFieldFormElement } from "@/components/form-builder-elements/fields/layout-elements/subtitle-field";
 import { ParagraphFieldFormElement } from "@/components/form-builder-elements/fields/layout-elements/paragraph-field";
-import { SeparatorFieldFormElement } from "@/components/form-builder-elements/fields/layout-elements/separator-field";
 import { SpacerFieldFormElement } from "@/components/form-builder-elements/fields/layout-elements/spacer-field";
+import { SeparatorFieldFormElement } from "@/components/form-builder-elements/fields/layout-elements/separator-field";
+
+// form elements
+import { TextFieldFormElement } from "@/components/form-builder-elements/fields/form-elements/text-field";
 import { NumberFieldFormElement } from "@/components/form-builder-elements/fields/form-elements/number-field";
 import { TextareaFieldFormElement } from "@/components/form-builder-elements/fields/form-elements/textarea-field";
 import { DateFieldFormElement } from "@/components/form-builder-elements/fields/form-elements/date-field";

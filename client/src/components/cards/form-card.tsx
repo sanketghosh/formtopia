@@ -1,11 +1,5 @@
 // packages
-import {
-  ArchiveIcon,
-  EyeIcon,
-  GlobeIcon,
-  LockIcon,
-  PenIcon,
-} from "lucide-react";
+import { EyeIcon, GlobeIcon, LockIcon, PenIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // local modules
@@ -22,8 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import TrashAlert from "../alert-dialog/trash-alert";
+import { buttonVariants } from "@/components/ui/button";
+import TrashAlert from "@/components/alert-dialog/trash-alert";
+import RecoverFromTrashAlert from "@/components/alert-dialog/recover-from-trash-alert";
+import DeleteFromTrashAlert from "@/components/alert-dialog/delete-from-trash-alert";
 
 type FormCardProps = {
   data: FormCardType;
@@ -38,9 +34,41 @@ export default function FormCard({
     title,
     published,
     id,
+    isTrashed,
+    trashedAt,
   },
 }: FormCardProps) {
   const formattedDate = formatDate(createdAt);
+
+  /*  
+  // COUNTDOWN
+
+
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!isTrashed) {
+      return;
+    }
+
+    const trashedAtTime = new Date(trashedAt).getTime();
+    const expiryTime = trashedAtTime + 2 * 60 * 1000;
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const timeRemaining = Math.max(expiryTime - now, 0); // Ensure it doesn't go below 0
+
+      setTimeLeft(timeRemaining);
+
+      if (timeRemaining <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [trashedAt, isTrashed]);
+
+  const minutes = Math.floor(timeLeft! / (1000 * 60));
+  const seconds = Math.floor((timeLeft! % (1000 * 60)) / 1000); */
 
   return (
     <Card className="relative">
@@ -71,44 +99,65 @@ export default function FormCard({
 
         <p className="text-sm font-medium text-muted-foreground">
           {/* {published ? "Published" : "Last updated"} on {formattedDate} */}
-          Created {formattedDate}
+          {isTrashed ? (
+            <div>
+              <p>Trashed {formatDate(trashedAt)}</p>
+              {/* {timeLeft! > 0 && (
+                <p>
+                  Will be deleted in {minutes}:
+                  {seconds.toString().padStart(2, "0")}
+                </p>
+              )} */}
+            </div>
+          ) : (
+            <>Created {formattedDate}</>
+          )}
         </p>
       </CardContent>
       <CardFooter className="flex w-full items-center justify-end gap-3 lg:justify-between">
-        {!published ? (
-          <div className="flex w-full items-center gap-3">
-            <Link
-              to={`/create-form/${id}`}
-              className={cn(
-                buttonVariants({
-                  variant: "default",
-                  size: "sm",
-                }),
-                "w-full",
-              )}
-            >
-              <PenIcon size={17} />
-              <p>Edit Form</p>
-            </Link>
-            <TrashAlert formId={id} />
-          </div>
+        {isTrashed ? (
+          <>
+            <RecoverFromTrashAlert formId={id} />
+            <DeleteFromTrashAlert formId={id} />
+          </>
         ) : (
-          <div className="flex w-full items-center gap-3">
-            <Link
-              to={`/single-form-data/${id}`}
-              className={cn(
-                buttonVariants({
-                  variant: "default",
-                  size: "sm",
-                }),
-                "w-full",
-              )}
-            >
-              <EyeIcon size={17} />
-              <p>Form Data</p>
-            </Link>
-            <TrashAlert formId={id} />
-          </div>
+          <>
+            {!published ? (
+              <div className="flex w-full items-center gap-3">
+                <Link
+                  to={`/create-form/${id}`}
+                  className={cn(
+                    buttonVariants({
+                      variant: "default",
+                      size: "sm",
+                    }),
+                    "w-full",
+                  )}
+                >
+                  <PenIcon size={17} />
+                  <p>Edit Form</p>
+                </Link>
+                <TrashAlert formId={id} />
+              </div>
+            ) : (
+              <div className="flex w-full items-center gap-3">
+                <Link
+                  to={`/single-form-data/${id}`}
+                  className={cn(
+                    buttonVariants({
+                      variant: "default",
+                      size: "sm",
+                    }),
+                    "w-full",
+                  )}
+                >
+                  <EyeIcon size={17} />
+                  <p>Form Data</p>
+                </Link>
+                <TrashAlert formId={id} />
+              </div>
+            )}
+          </>
         )}
       </CardFooter>
     </Card>
