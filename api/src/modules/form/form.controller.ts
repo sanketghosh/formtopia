@@ -560,11 +560,11 @@ export const formSubmitHandler = catchErrors(
     // console.log(continent);
 
     // if user is not authorized
-    if (!userId) {
+    /*  if (!userId) {
       res.status(UNAUTHORIZED).json({
         message: "User is not authorized.",
       });
-    }
+    } */
 
     // validate if content is available
     if (!content) {

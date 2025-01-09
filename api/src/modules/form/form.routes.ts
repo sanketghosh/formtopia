@@ -21,6 +21,7 @@ import {
 } from "@/modules/form/form.controller";
 import { FormCreateSchema } from "@/modules/form/form.schema";
 import { schemaValidator } from "@/middlewares";
+import { optionalVerifyToken } from "@/middlewares/optional-verify-token";
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ router.get(
   singleFormStatsHandler
 );
 router.get("/form/form-by-share-url/:shareUrl", getFormByShareUrlHandler);
-router.post("/form/submit/:shareUrl", verifyToken, formSubmitHandler);
+router.post("/form/submit/:shareUrl", optionalVerifyToken, formSubmitHandler);
 router.get(
   "/form/form-with-submissions/:formId",
   verifyToken,

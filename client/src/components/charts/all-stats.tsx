@@ -1,8 +1,8 @@
-"use client";
-
+// packages
 import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
+// components
 import {
   Card,
   CardContent,
@@ -25,10 +25,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { fetchChartDataAction } from "@/actions/chart.actions";
 
 const chartData = [
-  { date: "2024-04-01", formVisits: 222, submissions: 150 },
-  { date: "2024-04-02", formVisits: 97, submissions: 180 },
+  {
+    date: "2024-04-01",
+    formVisits: 222,
+    submissions: 150,
+    responsePercentage: 40.5,
+    bounceRate: 49.5,
+  },
+  {
+    date: "2024-04-02",
+    formVisits: 97,
+    submissions: 180,
+    responsePercentage: 40.5,
+    bounceRate: 49.5,
+  },
+  /* 
   { date: "2024-04-03", formVisits: 167, submissions: 120 },
   { date: "2024-04-04", formVisits: 242, submissions: 260 },
   { date: "2024-04-05", formVisits: 373, submissions: 290 },
@@ -117,7 +132,7 @@ const chartData = [
   { date: "2024-06-27", formVisits: 448, submissions: 490 },
   { date: "2024-06-28", formVisits: 149, submissions: 200 },
   { date: "2024-06-29", formVisits: 103, submissions: 160 },
-  { date: "2024-06-30", formVisits: 446, submissions: 400 },
+  { date: "2024-06-30", formVisits: 446, submissions: 400 }, */
 ];
 
 const chartConfig = {
@@ -142,10 +157,61 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+type DataPointType = {
+  submissions: number;
+  formVisits: number;
+  date: Date;
+  responsePercentage: number;
+  bounceRate: number;
+};
+
 export default function AllStats() {
+  const { data } = useQuery({
+    queryKey: ["fetch-overall-chart-stats"],
+    queryFn: fetchChartDataAction,
+    staleTime: 5000,
+    refetchOnWindowFocus: true,
+  });
+
+  // console.log(data?.data);
+
+  const groupedData = data?.data.reduce(
+    (acc: DataPointType[], current: DataPointType) => {
+      const { date, formVisits, submissions, responsePercentage, bounceRate } =
+        current;
+      const existing = acc.find((item) => item.date === date);
+
+      if (existing) {
+        existing.formVisits += formVisits;
+        existing.submissions += submissions;
+
+        // Recalculate aggregated responsePercentage and bounceRate
+        const totalVisits = existing.formVisits;
+        const totalSubmissions = existing.submissions;
+        existing.responsePercentage =
+          totalVisits > 0 ? (totalSubmissions / totalVisits) * 100 : 0;
+        existing.bounceRate =
+          totalVisits > 0 ? 100 - existing.responsePercentage : 0;
+      } else {
+        acc.push({
+          date,
+          formVisits,
+          submissions,
+          responsePercentage, // Use the value from the backend
+          bounceRate, // Use the value from the backend
+        });
+      }
+
+      return acc;
+    },
+    [] as DataPointType[], // Initial accumulator with correct type
+  );
+
+  console.log("@@grouped data", groupedData);
+
   const [timeRange, setTimeRange] = React.useState("90d");
 
-  const filteredData = chartData.filter((item) => {
+  const filteredData = groupedData?.filter((item: DataPointType) => {
     const date = new Date(item.date);
     const referenceDate = new Date("2024-06-30");
     let daysToSubtract = 90;
@@ -280,28 +346,28 @@ export default function AllStats() {
               }
             />
             <Area
-              dataKey="formVisits"
+              dataKey="submissions"
               type="natural"
               fill="url(#fillSubmissions)"
               stroke="var(--color-submissions)"
               stackId="a"
             />
             <Area
-              dataKey="submissions"
+              dataKey="formVisits"
               type="natural"
               fill="url(#fillFormVisits)"
               stroke="var(--color-formVisits)"
               stackId="a"
             />
             <Area
-              dataKey="formVisits"
+              dataKey="responsePercentage"
               type="natural"
               fill="url(#fillResponsePercentage)"
               stroke="var(--color-responsePercentage)"
               stackId="a"
             />
             <Area
-              dataKey="submissions"
+              dataKey="bounceRate"
               type="natural"
               fill="url(#fillBounceRate)"
               stroke="var(--color-bounceRate)"

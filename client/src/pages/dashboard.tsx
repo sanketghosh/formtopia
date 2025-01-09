@@ -25,6 +25,7 @@ import FormCreateDialog from "@/components/dialogs/form-create-dialog";
 import AllStats from "@/components/charts/all-stats";
 import StatsCard from "@/components/cards/stats-card";
 import { StatsCardsType } from "@/types";
+import ChartData from "@/components/charts/chart-data";
 
 export default function Dashboard() {
   const { user } = useAuthContext();
@@ -82,7 +83,6 @@ export default function Dashboard() {
           form stats here.
         </p>
       </div>
-
       <div className="flex items-center space-x-3">
         <FormCreateDialog />
         <Link
@@ -98,9 +98,7 @@ export default function Dashboard() {
           View All Forms
         </Link>
       </div>
-
       <Separator />
-
       {/* overall form stats */}
       <div className="space-y-3">
         <h2 className="font-medium text-muted-foreground">
@@ -122,8 +120,8 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
-
       <Separator />
+      <ChartData />
       <AllStats />
     </div>
   );

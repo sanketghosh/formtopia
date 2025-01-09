@@ -11,6 +11,7 @@ import swaggerDoc from "@/swagger.json";
 import { errorHandler } from "@/middlewares";
 import authRoutes from "@/modules/auth/auth.routes";
 import formRoutes from "@/modules/form/form.routes";
+import chartRoutes from "@/modules/chart/chart.routes";
 import healthCheck from "@/modules/health-check";
 import "@/cron/delete";
 
@@ -50,6 +51,7 @@ app.get("/get-ip", (req, res) => {
 app.use("/api/v1", healthCheck);
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", formRoutes);
+app.use("/api/v1", chartRoutes);
 
 // custom middlewares
 app.use(errorHandler);
