@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 // local modules
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Stepper from "@/components/steppers/publish-form-stepper";
 
 export default function Error() {
   return (

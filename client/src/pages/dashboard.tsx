@@ -1,31 +1,23 @@
 // packages
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { LibraryIcon, Loader2Icon } from "lucide-react";
-
-// components
-import { buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { LibraryIcon } from "lucide-react";
 
 // local modules
 import { useAuthContext } from "@/hooks/use-auth-context";
-import {
-  fetchFormsOverallMetricsAction,
-  formStatsAction,
-} from "@/actions/form.actions";
-import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
+import { formStatsAction } from "@/actions/form.actions";
 import { cn } from "@/lib/utils";
-import FormCreateDialog from "@/components/dialogs/form-create-dialog";
-import AllStats from "@/components/charts/all-stats";
-import StatsCard from "@/components/cards/stats-card";
 import { StatsCardsType } from "@/types";
-import ChartData from "@/components/charts/chart-data";
+
+// components
+import { Separator } from "@/components/ui/separator";
+import FormCreateDialog from "@/components/dialogs/form-create-dialog";
+import StatsCard from "@/components/cards/stats-card";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  GlobalFormMetrics,
+  GlobalLocationBarCharts,
+} from "@/components/charts";
 
 export default function Dashboard() {
   const { user } = useAuthContext();
@@ -121,8 +113,8 @@ export default function Dashboard() {
         </div>
       </div>
       <Separator />
-      <ChartData />
-      <AllStats />
+      <GlobalFormMetrics />
+      <GlobalLocationBarCharts />
     </div>
   );
 }

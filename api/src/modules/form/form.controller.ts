@@ -473,15 +473,62 @@ export const getFormByShareUrlHandler = catchErrors(
       });
     }
 
+    // today's date
+    const today = new Date();
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    // start a transaction to update visitsCount in both Form and FormDailyStats
+    await db.$transaction(async (tx) => {
+      // increment visitsCount in the Form model
+      await tx.form.update({
+        where: {
+          id: form.id,
+        },
+        data: {
+          visitsCount: {
+            increment: 1,
+          },
+        },
+      });
+
+      // increment visitsCount in the FormDailyStats
+      await tx.formDailyStats.upsert({
+        where: {
+          formId_date: {
+            formId: form.id,
+            date: todayStart,
+          },
+        },
+        create: {
+          formId: form.id,
+          date: todayStart,
+          visitsCount: 1,
+          cities: {},
+          countries: {},
+          continents: {},
+          devices: {},
+        },
+        update: {
+          visitsCount: {
+            increment: 1,
+          },
+        },
+      });
+    });
+
     // Increment the visitsCount by 1
-    await db.form.update({
+    /* await db.form.update({
       where: { id: form.id },
       data: {
         visitsCount: {
           increment: 1,
         },
       },
-    });
+    }); */
 
     // Respond with the form data
     res.status(OK).json({
@@ -545,8 +592,6 @@ export const formSubmitHandler = catchErrors(
     res: Response,
     next: NextFunction
   ): Promise<void | any> => {
-    // const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-
     const userId = req.userId;
     const { shareUrl } = req.params;
     const { content, device } = req.body;
@@ -556,15 +601,6 @@ export const formSubmitHandler = catchErrors(
 
     let extractContinent = timezone.split("/");
     const continent = extractContinent.length > 1 ? extractContinent[0] : null;
-
-    // console.log(continent);
-
-    // if user is not authorized
-    /*  if (!userId) {
-      res.status(UNAUTHORIZED).json({
-        message: "User is not authorized.",
-      });
-    } */
 
     // validate if content is available
     if (!content) {
@@ -611,8 +647,113 @@ export const formSubmitHandler = catchErrors(
       }
     }
 
+    // today
+    const today = new Date();
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const submission = await db.$transaction(async (tx) => {
+      // save the form submission
+      const newSubmission = await tx.formSubmission.create({
+        data: {
+          formId: form.id,
+          userId: userId || null,
+          content: content,
+          city: city || null,
+          country: country || null,
+          continent: continent || null,
+          device: device || null,
+        },
+      });
+
+      // if not submitted
+      if (!newSubmission) {
+        res.status(BAD_REQUEST).json({
+          message: "ERROR! Failed to submit the form.",
+        });
+      }
+
+      // increment cumulative submission count in form
+      await tx.form.update({
+        where: {
+          id: form.id,
+        },
+        data: {
+          submissionsCount: {
+            increment: 1,
+          },
+        },
+      });
+
+      // update form daily stats
+      const dailyStats = await tx.formDailyStats.upsert({
+        where: {
+          formId_date: {
+            formId: form.id,
+            date: todayStart,
+          },
+        },
+        create: {
+          formId: form.id,
+          date: todayStart,
+          submissions: 1,
+          cities: city ? { [city]: 1 } : {},
+          countries: country ? { [country]: 1 } : {},
+          continents: continent ? { [continent]: 1 } : {},
+          devices: device ? { [device]: 1 } : {},
+        },
+        update: {
+          submissions: { increment: 1 },
+          cities: city
+            ? {
+                increment: {
+                  [city]: 1,
+                },
+              }
+            : undefined,
+          countries: country
+            ? {
+                increment: {
+                  [country]: 1,
+                },
+              }
+            : undefined,
+          continents: continent
+            ? {
+                increment: {
+                  [continent]: 1,
+                },
+              }
+            : undefined,
+          devices: device
+            ? {
+                increment: {
+                  [device]: 1,
+                },
+              }
+            : undefined,
+        },
+      });
+
+      if (!dailyStats) {
+        res.status(BAD_REQUEST).json({
+          message: "ERROR! Failed to update daily stats.",
+        });
+      }
+      return newSubmission;
+    });
+
+    if (!submission) {
+      return res.status(BAD_REQUEST).json({
+        message: "ERROR! Failed to submit the form.",
+      });
+    }
+
     // Save the form submission
-    const submission = await db.formSubmission.create({
+    /* const submission = await db.formSubmission.create({
       data: {
         formId: form.id,
         userId: userId || null,
@@ -628,15 +769,15 @@ export const formSubmitHandler = catchErrors(
       res.status(BAD_REQUEST).json({
         message: "ERROR! Failed to submit the form.",
       });
-    }
+    } */
 
     // Increment the form's submission count
-    await db.form.update({
+    /* await db.form.update({
       where: { id: form.id },
       data: {
         submissionsCount: { increment: 1 },
       },
-    });
+    }); */
 
     res.status(CREATED).json({
       message: "SUCCESS! Form submitted successfully.",
@@ -644,90 +785,6 @@ export const formSubmitHandler = catchErrors(
     });
   }
 );
-
-/***
- *
- *
- *
- *
- */
-
-/* export const getAllFormsOverallMetricsHandler = catchErrors(
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void | any> => {
-    const userId = req.userId;
-
-    // Check if user exists
-    if (!userId) {
-      return res.status(UNAUTHORIZED).json({
-        message: "ERROR! Unauthorized. User not found.",
-      });
-    }
-
-    // Aggregate overall stats
-    const stats = await db.form.aggregate({
-      where: {
-        userId: userId,
-      },
-      _sum: {
-        visitsCount: true,
-        submissionsCount: true,
-      },
-    });
-
-    // Calculate visits, submissions, submission rate, and bounce rate
-    const visits = stats._sum.visitsCount || 0;
-    const submissions = stats._sum.submissionsCount || 0;
-
-    let submissionRate = 0;
-    if (visits > 0) {
-      submissionRate = (submissions / visits) * 100;
-    }
-    const bounceRate = 100 - submissionRate;
-
-    // Fetch all submissions and transform data
-    const allSubmissions = await db.formSubmission.findMany({
-      where: {
-        form: {
-          userId: userId,
-        },
-      },
-      select: {
-        submittedAt: true,
-      },
-    });
-
-    // Group submissions by month
-    const monthlyMetrics = allSubmissions.reduce((acc, submission) => {
-      const month = submission.submittedAt.toISOString().substring(0, 7); // Extract "YYYY-MM"
-      if (!acc[month]) {
-        acc[month] = { month, submissions: 0 };
-      }
-      acc[month].submissions += 1;
-      return acc;
-    }, {} as Record<string, { month: string; submissions: number }>);
-
-    const formattedMonthlyMetrics = Object.values(monthlyMetrics);
-
-    // Prepare response data
-    const _data = {
-      visits,
-      submissions,
-      submissionRate,
-      bounceRate,
-      monthlyMetrics: formattedMonthlyMetrics,
-    };
-
-    res.status(OK).json({
-      message: "SUCCESS! Stats fetched successfully.",
-      data: _data,
-    });
-  }
-);
- */
 
 /***
  *
@@ -968,36 +1025,3 @@ export const deleteFromTrashHandler = catchErrors(
     });
   }
 );
-
-/**
- *
- *
- *
- *
- */
-
-/* export const deleteOldTrashedForms = async () => {
-  const oneMinuteAgo = new Date();
-  oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1); // 1 minute ago
-
-  try {
-    // Delete forms that are trashed and older than 1 minute
-    const deletedForms = await db.form.deleteMany({
-      where: {
-        isTrashed: true,
-        trashedAt: {
-          lte: oneMinuteAgo, // Less than or equal to 1 minute ago
-        },
-      },
-    });
-
-    if (deletedForms.count > 0) {
-      console.log(`SUCCESS: Deleted ${deletedForms.count} forms from trash.`);
-    } else {
-      console.log("SUCCESS: No forms were found for deletion.");
-    }
-  } catch (error) {
-    console.error("ERROR: Failed to delete old trashed forms:", error);
-  }
-};
- */

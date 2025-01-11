@@ -49,6 +49,8 @@ model Form {
   formSubmissions FormSubmission[]
   user            User             @relation(fields: [userId], references: [id])
 
+  dailyStats FormDailyStats[]
+
   @@map("forms")
 }
 
@@ -69,4 +71,27 @@ model FormSubmission {
 
   @@unique([formId, userId])
   @@map("form_submissions")
+}
+
+model FormDailyStats {
+  id                 String   @id @default(uuid())
+  formId             String
+  date               DateTime
+  visitsCount        Int      @default(0)
+  submissions        Int      @default(0)
+  responsePercentage Float?
+  bounceRate         Float?
+
+  // aggregated location stats
+  cities     Json?
+  countries  Json?
+  continents Json?
+
+  // aggregated device stats
+  devices Json?
+
+  Form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, date])
+  @@map("form_daily_stats")
 }

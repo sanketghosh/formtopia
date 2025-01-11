@@ -13,7 +13,7 @@ import authRoutes from "@/modules/auth/auth.routes";
 import formRoutes from "@/modules/form/form.routes";
 import chartRoutes from "@/modules/chart/chart.routes";
 import healthCheck from "@/modules/health-check";
-import "@/cron/delete";
+import "@/jobs/delete-trashed-forms";
 
 // app initializer
 const app = express();

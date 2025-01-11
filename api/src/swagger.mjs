@@ -10,6 +10,10 @@ const doc = {
 };
 
 const outputFile = "./swagger.json";
-const routes = ["./modules/health-check.ts", "./modules/auth/auth.routes.ts"];
+const routes = [
+  "./modules/health-check.ts",
+  "./modules/auth/auth.routes.ts",
+  "./modules/chat/chat.routes.ts",
+];
 
 swaggerAutoGen()(outputFile, routes, doc);
